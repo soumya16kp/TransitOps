@@ -43,6 +43,13 @@ class Driver(models.Model):
         db_index=True  # Indexed for faster querying in the Dispatcher UI
     )
 
+    license_file = models.FileField(
+        upload_to='driver_licenses/',
+        blank=True,
+        null=True,
+        help_text="Uploaded copy of the driving license"
+    )
+
     # Auditing timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
