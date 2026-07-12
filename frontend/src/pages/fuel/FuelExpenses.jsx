@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import fuelService from '../../services/FuelService';
 import './FuelExpenses.css';
+import axios from 'axios';
 
 const FuelExpenses = () => {
     const [fuelLogs, setFuelLogs] = useState([]);
@@ -23,7 +24,9 @@ const FuelExpenses = () => {
     const [showExpenseModal, setShowExpenseModal] = useState(false);
 
     // Form states
+    const [trips, setTrips] = useState([]);
     const [fuelForm, setFuelForm] = useState({
+        trip: '',
         vehicle: '',
         date: new Date().toISOString().split('T')[0],
         liters: '',
@@ -62,7 +65,8 @@ const FuelExpenses = () => {
     const sortedFuelLogs = useMemo(() => {
         // Filter first
         const filtered = fuelLogs.filter(log =>
-            (log.vehicle || '').toLowerCase().includes(searchQuery.toLowerCase())
+            (log.vehicle || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (log.trip_tracking_number || '').toLowerCase().includes(searchQuery.toLowerCase())
         );
 
         let sortableItems = [...filtered];
@@ -157,14 +161,16 @@ const FuelExpenses = () => {
     const loadData = async () => {
         try {
             setLoading(true);
-            const [logs, expenses, sum] = await Promise.all([
+            const [logs, expenses, sum, tripsRes] = await Promise.all([
                 fuelService.getFuelLogs(),
                 fuelService.getOtherExpenses(),
-                fuelService.getSummary()
+                fuelService.getSummary(),
+                axios.get('http://localhost:8000/api/trips/').then(r => r.data).catch(() => [])
             ]);
             setFuelLogs(logs);
             setOtherExpenses(expenses);
             setSummary(sum);
+            setTrips(Array.isArray(tripsRes) ? tripsRes : []);
             setError(null);
         } catch (err) {
             console.error('Error loading expenses data:', err);
@@ -181,14 +187,19 @@ const FuelExpenses = () => {
     const handleFuelSubmit = async (e) => {
         e.preventDefault();
         try {
-            await fuelService.createFuelLog({
+            const payload = {
                 vehicle: fuelForm.vehicle,
                 date: fuelForm.date,
                 liters: parseFloat(fuelForm.liters),
                 fuel_cost: parseFloat(fuelForm.fuel_cost)
-            });
+            };
+            if (fuelForm.trip) {
+                payload.trip = parseInt(fuelForm.trip);
+            }
+            await fuelService.createFuelLog(payload);
             setShowFuelModal(false);
             setFuelForm({
+                trip: '',
                 vehicle: '',
                 date: new Date().toISOString().split('T')[0],
                 liters: '',
@@ -269,6 +280,9 @@ const FuelExpenses = () => {
                             <table className="expenses-table">
                                 <thead>
                                     <tr>
+                                        <th onClick={() => requestFuelSort('trip_tracking_number')} className="sortable-header">
+                                            TRIP ID {getFuelSortIcon('trip_tracking_number')}
+                                        </th>
                                         <th onClick={() => requestFuelSort('vehicle')} className="sortable-header">
                                             VEHICLE {getFuelSortIcon('vehicle')}
                                         </th>
@@ -286,6 +300,7 @@ const FuelExpenses = () => {
                                 <tbody>
                                     {sortedFuelLogs.map((log) => (
                                         <tr key={log.id}>
+                                            <td className="bold-text" style={{ color: '#60a5fa' }}>{log.trip_tracking_number || '—'}</td>
                                             <td className="bold-text">{log.vehicle}</td>
                                             <td>{formatDate(log.date)}</td>
                                             <td>{parseFloat(log.liters).toFixed(0)} L</td>
@@ -294,7 +309,7 @@ const FuelExpenses = () => {
                                     ))}
                                     {sortedFuelLogs.length === 0 && (
                                         <tr>
-                                            <td colSpan="4" className="empty-row">No matching fuel logs found</td>
+                                            <td colSpan="5" className="empty-row">No matching fuel logs found</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -375,6 +390,29 @@ const FuelExpenses = () => {
                             <button className="close-btn" onClick={() => setShowFuelModal(false)}>&times;</button>
                         </div>
                         <form onSubmit={handleFuelSubmit}>
+                            <div className="expense-form-group">
+                                <label>Associate with Trip (Optional)</label>
+                                <select 
+                                    value={fuelForm.trip}
+                                    onChange={(e) => {
+                                        const selectedTripId = e.target.value;
+                                        const selectedTrip = trips.find(t => String(t.id) === String(selectedTripId));
+                                        setFuelForm({
+                                            ...fuelForm,
+                                            trip: selectedTripId,
+                                            // Auto-populate vehicle registration number from selected trip if available
+                                            vehicle: selectedTrip ? selectedTrip.vehicle_registration : fuelForm.vehicle
+                                        });
+                                    }}
+                                >
+                                    <option value="">-- Select Trip (Optional) --</option>
+                                    {Array.isArray(trips) && trips.map(t => (
+                                        <option key={t.id} value={t.id}>
+                                            {t.tracking_number} ({t.source} &rarr; {t.destination}) [{t.status}]
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <div className="expense-form-group">
                                 <label>Vehicle</label>
                                 <input 
