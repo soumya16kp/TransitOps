@@ -324,3 +324,26 @@
         justify-content: center;
     }
 }
+
+/* Sorting Header Styles */
+.sortable-header {
+    cursor: pointer;
+    user-select: none;
+}
+.sortable-header:hover {
+    color: #fff !important;
+}
+.sortable-header i {
+    margin-left: 6px;
+    font-size: 0.8rem;
+    transition: color 0.2s;
+}
+.sort-placeholder {
+    color: rgba(255, 255, 255, 0.15);
+}
+.sortable-header:hover .sort-placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+.sorted {
+    color: #f5a623 !important;
+}

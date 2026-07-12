@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import fuelService from '../../services/FuelService';
 import './FuelExpenses.css';
 
@@ -35,6 +35,110 @@ const FuelExpenses = () => {
         maint_linked: '0',
         status: 'Available'
     });
+
+    // Sorting states
+    const [fuelSortConfig, setFuelSortConfig] = useState({ key: null, direction: 'asc' });
+    const [expenseSortConfig, setExpenseSortConfig] = useState({ key: null, direction: 'asc' });
+
+    const requestFuelSort = (key) => {
+        let direction = 'asc';
+        if (fuelSortConfig.key === key && fuelSortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setFuelSortConfig({ key, direction });
+    };
+
+    const requestExpenseSort = (key) => {
+        let direction = 'asc';
+        if (expenseSortConfig.key === key && expenseSortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setExpenseSortConfig({ key, direction });
+    };
+
+    const sortedFuelLogs = useMemo(() => {
+        let sortableItems = [...fuelLogs];
+        if (fuelSortConfig.key !== null) {
+            sortableItems.sort((a, b) => {
+                let aValue, bValue;
+                if (fuelSortConfig.key === 'liters') {
+                    aValue = Number(a.liters) || 0;
+                    bValue = Number(b.liters) || 0;
+                } else if (fuelSortConfig.key === 'fuel_cost') {
+                    aValue = Number(a.fuel_cost) || 0;
+                    bValue = Number(b.fuel_cost) || 0;
+                } else {
+                    aValue = a[fuelSortConfig.key] || '';
+                    bValue = b[fuelSortConfig.key] || '';
+                }
+
+                if (typeof aValue === 'string') {
+                    return fuelSortConfig.direction === 'asc'
+                        ? aValue.localeCompare(bValue)
+                        : bValue.localeCompare(aValue);
+                } else {
+                    return fuelSortConfig.direction === 'asc'
+                        ? aValue - bValue
+                        : bValue - aValue;
+                }
+            });
+        }
+        return sortableItems;
+    }, [fuelLogs, fuelSortConfig]);
+
+    const sortedOtherExpenses = useMemo(() => {
+        let sortableItems = [...otherExpenses];
+        if (expenseSortConfig.key !== null) {
+            sortableItems.sort((a, b) => {
+                let aValue, bValue;
+                if (expenseSortConfig.key === 'toll') {
+                    aValue = Number(a.toll) || 0;
+                    bValue = Number(b.toll) || 0;
+                } else if (expenseSortConfig.key === 'other') {
+                    aValue = Number(a.other) || 0;
+                    bValue = Number(b.other) || 0;
+                } else if (expenseSortConfig.key === 'maint_linked') {
+                    aValue = Number(a.maint_linked) || 0;
+                    bValue = Number(b.maint_linked) || 0;
+                } else if (expenseSortConfig.key === 'total') {
+                    aValue = (Number(a.toll) || 0) + (Number(a.other) || 0) + (Number(a.maint_linked) || 0);
+                    bValue = (Number(b.toll) || 0) + (Number(b.other) || 0) + (Number(b.maint_linked) || 0);
+                } else {
+                    aValue = a[expenseSortConfig.key] || '';
+                    bValue = b[expenseSortConfig.key] || '';
+                }
+
+                if (typeof aValue === 'string') {
+                    return expenseSortConfig.direction === 'asc'
+                        ? aValue.localeCompare(bValue)
+                        : bValue.localeCompare(aValue);
+                } else {
+                    return expenseSortConfig.direction === 'asc'
+                        ? aValue - bValue
+                        : bValue - aValue;
+                }
+            });
+        }
+        return sortableItems;
+    }, [otherExpenses, expenseSortConfig]);
+
+    const getFuelSortIcon = (key) => {
+        if (fuelSortConfig.key !== key) {
+            return <i className="fas fa-sort sort-placeholder"></i>;
+        }
+        return fuelSortConfig.direction === 'asc'
+            ? <i className="fas fa-sort-up sorted"></i>
+            : <i className="fas fa-sort-down sorted"></i>;
+    };
+
+    const getExpenseSortIcon = (key) => {
+        if (expenseSortConfig.key !== key) {
+            return <i className="fas fa-sort sort-placeholder"></i>;
+        }
+        return expenseSortConfig.direction === 'asc'
+            ? <i className="fas fa-sort-up sorted"></i>
+            : <i className="fas fa-sort-down sorted"></i>;
+    };
 
     const loadData = async () => {
         try {
@@ -142,14 +246,22 @@ const FuelExpenses = () => {
                             <table className="expenses-table">
                                 <thead>
                                     <tr>
-                                        <th>VEHICLE</th>
-                                        <th>DATE</th>
-                                        <th>LITERS</th>
-                                        <th>FUEL COST</th>
+                                        <th onClick={() => requestFuelSort('vehicle')} className="sortable-header">
+                                            VEHICLE {getFuelSortIcon('vehicle')}
+                                        </th>
+                                        <th onClick={() => requestFuelSort('date')} className="sortable-header">
+                                            DATE {getFuelSortIcon('date')}
+                                        </th>
+                                        <th onClick={() => requestFuelSort('liters')} className="sortable-header">
+                                            LITERS {getFuelSortIcon('liters')}
+                                        </th>
+                                        <th onClick={() => requestFuelSort('fuel_cost')} className="sortable-header">
+                                            FUEL COST {getFuelSortIcon('fuel_cost')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {fuelLogs.map((log) => (
+                                    {sortedFuelLogs.map((log) => (
                                         <tr key={log.id}>
                                             <td className="bold-text">{log.vehicle}</td>
                                             <td>{formatDate(log.date)}</td>
@@ -174,16 +286,28 @@ const FuelExpenses = () => {
                             <table className="expenses-table">
                                 <thead>
                                     <tr>
-                                        <th>TRIP</th>
-                                        <th>VEHICLE</th>
-                                        <th>TOLL</th>
-                                        <th>OTHER</th>
-                                        <th>MAINT. (LINKED)</th>
-                                        <th>TOTAL / STATUS</th>
+                                        <th onClick={() => requestExpenseSort('trip')} className="sortable-header">
+                                            TRIP {getExpenseSortIcon('trip')}
+                                        </th>
+                                        <th onClick={() => requestExpenseSort('vehicle')} className="sortable-header">
+                                            VEHICLE {getExpenseSortIcon('vehicle')}
+                                        </th>
+                                        <th onClick={() => requestExpenseSort('toll')} className="sortable-header">
+                                            TOLL {getExpenseSortIcon('toll')}
+                                        </th>
+                                        <th onClick={() => requestExpenseSort('other')} className="sortable-header">
+                                            OTHER {getExpenseSortIcon('other')}
+                                        </th>
+                                        <th onClick={() => requestExpenseSort('maint_linked')} className="sortable-header">
+                                            MAINT. (LINKED) {getExpenseSortIcon('maint_linked')}
+                                        </th>
+                                        <th onClick={() => requestExpenseSort('status')} className="sortable-header">
+                                            STATUS {getExpenseSortIcon('status')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {otherExpenses.map((exp) => (
+                                    {sortedOtherExpenses.map((exp) => (
                                         <tr key={exp.id}>
                                             <td className="bold-text">{exp.trip}</td>
                                             <td>{exp.vehicle}</td>
