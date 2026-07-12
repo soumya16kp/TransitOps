@@ -1,126 +1,185 @@
-/* ─── Tasks Execution Board ─────────────────────────────────────────────── */
+/* =========================================================
+   Tasks.css – Modern Minimalist Glassmorphic Kanban Board
+   ========================================================= */
+
 .tasks-container {
-  padding: 24px;
-  background-color: #0b0f19;
-  color: #e5e7eb;
-  min-height: 100vh;
+    padding: 2.5rem 2rem;
+    background-color: #0b0f19;
+    color: #e5e7eb;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top right, rgba(26, 26, 46, 0.3), transparent 60%),
+                radial-gradient(circle at bottom left, rgba(16, 24, 48, 0.2), transparent 50%),
+                #070a13;
 }
 
 .tasks-header {
-  margin-bottom: 24px;
+    margin-bottom: 2rem;
 }
 
 .tasks-header h2 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #f9fafb;
-  margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #f9fafb;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.3px;
 }
 
 .tasks-header p {
-  color: #6b7280;
-  margin: 6px 0 0 0;
-  font-size: 0.875rem;
+    color: #94a3b8;
+    margin: 8px 0 0 0;
+    font-size: 0.88rem;
+    max-width: 700px;
+    line-height: 1.5;
 }
 
 .refresh-indicator {
-  font-size: 0.72rem;
-  color: #374151;
-  margin-left: 10px;
-  font-weight: normal;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    margin-left: 14px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: lowercase;
 }
 
-/* ─── Kanban Board: 4 columns ─────────────────────────────────────────────── */
+.refresh-indicator::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse-live 2s infinite ease-in-out;
+}
+
+@keyframes pulse-live {
+    0%, 100% { opacity: 0.5; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ─── Kanban Board ───────────────────────────────────────── */
 .kanban-board {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 0.8fr;
-  gap: 20px;
-  align-items: start;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 0.85fr;
+    gap: 1.5rem;
+    align-items: start;
 }
 
-@media (max-width: 1100px) {
-  .kanban-board {
-    grid-template-columns: 1fr 1fr;
-  }
+@media (max-width: 1200px) {
+    .kanban-board {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
 }
 
-@media (max-width: 640px) {
-  .kanban-board {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 680px) {
+    .kanban-board {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
 }
 
-/* ─── Kanban Column ───────────────────────────────────────────────────────── */
+/* ─── Kanban Column ───────────────────────────────────────── */
 .kanban-column {
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 10px;
-  padding: 16px;
-  min-height: 50vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    padding: 1.25rem 1rem;
+    min-height: 65vh;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    position: relative;
+    transition: all 0.3s ease;
 }
 
-.kanban-column.col-draft      { border-top: 3px solid #6b7280; }
-.kanban-column.col-dispatched { border-top: 3px solid #3b82f6; }
-.kanban-column.col-completed  { border-top: 3px solid #4ade80; }
-.kanban-column.col-cancelled  { border-top: 3px solid #f87171; }
+.kanban-column::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    border-radius: 0 0 4px 4px;
+}
+
+.kanban-column.col-draft::after      { background: linear-gradient(90deg, transparent, #6b7280, transparent); }
+.kanban-column.col-dispatched::after { background: linear-gradient(90deg, transparent, #3b82f6, transparent); }
+.kanban-column.col-completed::after  { background: linear-gradient(90deg, transparent, #4ade80, transparent); }
+.kanban-column.col-cancelled::after  { background: linear-gradient(90deg, transparent, #f87171, transparent); }
 
 .column-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.column-header.draft      { color: #9ca3af; }
+.column-header.draft      { color: #94a3b8; }
 .column-header.dispatched { color: #60a5fa; }
 .column-header.completed  { color: #4ade80; }
 .column-header.cancelled  { color: #f87171; }
 
 .column-count {
-  background-color: #1e293b;
-  color: #94a3b8;
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 10px;
-  min-width: 22px;
-  text-align: center;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    min-width: 1.25rem;
+    text-align: center;
 }
 
 .column-empty {
-  text-align: center;
-  color: #374151;
-  font-size: 0.8rem;
-  padding: 24px 0;
+    text-align: center;
+    color: #475569;
+    font-size: 0.8rem;
+    padding: 2.5rem 0;
+    border: 1px dashed rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.01);
 }
 
-/* ─── Task Cards ──────────────────────────────────────────────────────────── */
+/* ─── Task Cards ──────────────────────────────────────────── */
 .task-card {
-  background: linear-gradient(135deg, #1e293b 0%, #162032 100%);
-  border-left: 3px solid #374151;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  padding: 14px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative;
-  overflow: hidden;
+    background: rgba(30, 41, 59, 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 1.1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .task-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3.5px;
+    height: 100%;
 }
 
 .task-card.card-draft::before      { background: #6b7280; }
@@ -129,104 +188,166 @@
 .task-card.card-cancelled::before  { background: #f87171; }
 
 .task-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    transform: translateY(-3px) scale(1.005);
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(30, 41, 59, 0.5);
 }
+
+.task-card.card-draft:hover      { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 10px rgba(107, 114, 128, 0.1); }
+.task-card.card-dispatched:hover { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 10px rgba(59, 130, 246, 0.15); }
+.task-card.card-completed:hover  { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 10px rgba(74, 222, 128, 0.15); }
+.task-card.card-cancelled:hover  { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 10px rgba(248, 113, 113, 0.15); }
 
 /* Highlighted card from navigation */
 .task-card.highlighted {
-  box-shadow: 0 0 0 2px #f5a623, 0 8px 24px rgba(245, 166, 35, 0.3);
-  animation: highlight-pulse 2s ease-in-out 3;
+    border-color: var(--accent, #f5a623);
+    background: rgba(30, 41, 59, 0.6);
+    box-shadow: 0 0 0 2px var(--accent, #f5a623), 0 12px 32px rgba(245, 166, 35, 0.25);
+    animation: highlight-pulse 2s ease-in-out infinite;
 }
 
 @keyframes highlight-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px #f5a623, 0 8px 24px rgba(245, 166, 35, 0.3); }
-  50%       { box-shadow: 0 0 0 4px #f5a623, 0 12px 32px rgba(245, 166, 35, 0.5); }
+    0%, 100% {
+        box-shadow: 0 0 0 1.5px var(--accent, #f5a623), 0 12px 32px rgba(245, 166, 35, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 0 3px var(--accent, #f5a623), 0 18px 40px rgba(245, 166, 35, 0.35);
+    }
 }
 
 .task-tracking {
-  font-weight: 800;
-  font-size: 0.95rem;
-  color: #f9fafb;
-  letter-spacing: 0.5px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #f9fafb;
+    letter-spacing: 0.5px;
 }
 
 .task-route {
-  font-size: 0.8rem;
-  color: #94a3b8;
-  margin-top: 5px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 6px;
+    font-weight: 500;
 }
 
 .task-assets {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    font-size: 0.76rem;
+    color: #6b7280;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 10px;
 }
 
 .task-revenue {
-  color: #4ade80;
-  font-weight: 700;
+    color: #1dd1a1;
+    font-weight: 600;
+    font-size: 0.82rem;
 }
 
 /* ─── Mini Pipeline inside Task Cards ────────────────────────────────────── */
 .pipeline-mini {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin: 10px 0 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 12px 0 8px 0;
 }
 
 .pipeline-mini-node {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #374151;
-  border: 1.5px solid #4b5563;
-  flex-shrink: 0;
-  transition: background 0.3s;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #334155;
+    border: 1.5px solid #475569;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pipeline-mini-node.done     { background: #4ade80; border-color: #4ade80; }
-.pipeline-mini-node.active   { background: #60a5fa; border-color: #60a5fa; box-shadow: 0 0 5px rgba(96,165,250,0.7); }
+.pipeline-mini-node.active   { background: #60a5fa; border-color: #60a5fa; box-shadow: 0 0 6px rgba(96,165,250,0.8); }
 .pipeline-mini-node.cancelled{ background: #f87171; border-color: #f87171; }
 
 .pipeline-mini-line {
-  flex: 1;
-  height: 1.5px;
-  background: #374151;
-  min-width: 10px;
-  transition: background 0.3s;
+    flex: 1;
+    height: 1.5px;
+    background: #334155;
+    min-width: 10px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pipeline-mini-line.done { background: #4ade80; }
 
 /* ─── Inline Card Action Buttons ─────────────────────────────────────────── */
 .task-card-actions {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 10px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 10px;
 }
 
 .btn-task-action {
-  border: none;
-  border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  transition: opacity 0.15s, transform 0.1s;
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-task-action:hover  { opacity: 0.85; transform: scale(1.03); }
-.btn-task-action:active { transform: scale(0.97); }
-.btn-task-action:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn-task-action:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
 
-.btn-task-action.dispatch { background: #3b82f6; color: #eff6ff; }
-.btn-task-action.complete { background: #4ade80; color: #064e3b; }
-.btn-task-action.cancel   { background: #f87171; color: #450a0a; }
+.btn-task-action:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-task-action:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.btn-task-action.dispatch {
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+}
+
+.btn-task-action.dispatch:hover:not(:disabled) {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #0f0f1a;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.btn-task-action.complete {
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    color: #4ade80;
+}
+
+.btn-task-action.complete:hover:not(:disabled) {
+    background: #4ade80;
+    border-color: #4ade80;
+    color: #052e16;
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.25);
+}
+
+.btn-task-action.cancel {
+    background: rgba(248, 113, 113, 0.06);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    color: #f87171;
+}
+
+.btn-task-action.cancel:hover:not(:disabled) {
+    background: #f87171;
+    border-color: #f87171;
+    color: #450a0a;
+    box-shadow: 0 4px 12px rgba(248, 113, 113, 0.25);
+}
