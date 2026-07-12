@@ -176,7 +176,7 @@ class AnalyticsSummaryView(APIView):
         # Build ordered month scaffold for last 7 months (current included)
         months_data = OrderedDict()
         for i in range(6, -1, -1):
-            # Step back month by month
+            # Step step back month by month
             d = today - datetime.timedelta(days=30 * i)
             months_data[d.strftime('%b %Y')] = 0.0
 
