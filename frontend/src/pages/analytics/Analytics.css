@@ -1,0 +1,307 @@
+/* Analytics.css */
+
+.analytics-page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 16px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* KPI Cards Grid */
+.analytics-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.analytics-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.analytics-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-header-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #7b8299;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.card-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    color: #fff;
+}
+
+/* KPI Coloring Left Borders matching screenshot themes */
+.blue-card {
+    border-left: 4px solid #3b82f6;
+}
+.green-card {
+    border-left: 4px solid #10b981;
+}
+.orange-card {
+    border-left: 4px solid #f97316;
+}
+.yellow-card {
+    border-left: 4px solid #f5a623;
+}
+
+/* ROI Subtext Formula */
+.roi-formula-label {
+    font-size: 0.75rem;
+    color: #7b8299;
+    font-style: italic;
+    letter-spacing: 0.5px;
+    margin-top: -8px;
+}
+
+/* Graphs Layout Panel Row */
+.analytics-graphs-row {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 24px;
+}
+
+.graph-panel {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.graph-panel-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.8px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+}
+
+/* Monthly Revenue Bar Chart styles */
+.bar-chart-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    height: 240px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 8px;
+}
+
+.bars-flexbox {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.bar-col-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    height: 100%;
+}
+
+.bar-column-fill {
+    width: 100%;
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+    border-radius: 6px 6px 0 0;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+
+.bar-column-fill:hover {
+    background: linear-gradient(180deg, #93c5fd 0%, #60a5fa 100%);
+    transform: scaleX(1.05);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+.bar-axis-label {
+    font-size: 0.72rem;
+    color: #7b8299;
+    margin-top: 12px;
+    position: absolute;
+    bottom: -28px;
+    text-transform: uppercase;
+}
+
+/* Tooltip styles */
+.bar-tooltip {
+    position: absolute;
+    top: -36px;
+    background: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.bar-col-wrapper:hover .bar-tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: -42px;
+}
+
+/* Costliest Vehicles Progress Lists */
+.progress-bars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    flex: 1;
+}
+
+.vehicle-cost-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.costly-vehicle-name {
+    width: 80px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: #e8eaf0;
+    letter-spacing: 0.5px;
+}
+
+.costly-progress-container {
+    flex: 1;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.costly-progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Color schemes for progress bar rows matching screenshot */
+.red-bar {
+    background: linear-gradient(90deg, #f87171 0%, #ef4444 100%);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+.orange-bar {
+    background: linear-gradient(90deg, #fb923c 0%, #f97316 100%);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+}
+.blue-bar {
+    background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.costly-amount-label {
+    min-width: 80px;
+    text-align: right;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #7b8299;
+}
+
+.empty-panel-state {
+    color: #7b8299;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 24px;
+}
+
+/* Access Denied styles */
+.access-denied-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    max-width: 600px;
+    margin: 40px auto;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.access-denied-container .warning-icon {
+    font-size: 3rem;
+    color: #e74c3c;
+    margin-bottom: 24px;
+}
+
+.access-denied-container h2 {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+}
+
+.access-denied-container p {
+    color: #7b8299;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Loading & Empty Loading alignment */
+.loading-state, .error-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #7b8299;
+    padding: 96px;
+    font-size: 0.95rem;
+}
+
+.error-state {
+    color: #ff5252;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 1024px) {
+    .analytics-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .analytics-graphs-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}

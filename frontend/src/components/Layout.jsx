@@ -22,9 +22,6 @@ const Layout = () => {
     if (location.pathname === '/registry') {
         title = "Fleet Registry";
         subtitle = "Manage and track company fleet details";
-    } else if (location.pathname === '/drivers') {
-        title = "Drivers";
-        subtitle = "Manage driver profiles and compliance";
     } else if (location.pathname === '/maintenance') {
         title = "Maintenance";
         subtitle = "Log, track, and resolve vehicle servicing records";
@@ -43,6 +40,9 @@ const Layout = () => {
     } else if (location.pathname === '/documents') {
         title = "Roadside Documents";
         subtitle = "Manage critical legal vehicle documents for roadside checks";
+    } else if (location.pathname === '/analytics') {
+        title = "Reports & Analytics";
+        subtitle = "Performance metrics, revenue, and fleet operational costs";
     }
 
     // Guard: redirect to /dashboard if user tries to access a restricted page directly
@@ -51,17 +51,23 @@ const Layout = () => {
         '/maintenance': 'fleet',
         '/drivers': 'driver',
         '/dispatcher': 'trips',
+        '/tasks': 'trips',
         '/fuel-expenses': 'fuel',
+        '/analytics': 'analytics'
     };
     const currentModule = routeModuleMap[location.pathname];
     if (currentModule && !canAccess(currentModule)) {
         return <Navigate to="/dashboard" replace />;
     }
 
-    // Settings is admin-only guard
+    // Settings & Documents are admin-only guards
     if (location.pathname === '/settings' && role !== 'admin') {
         return <Navigate to="/dashboard" replace />;
     }
+    if (location.pathname === '/documents' && role !== 'admin') {
+        return <Navigate to="/dashboard" replace />;
+    }
+
     return (
         <div className="dashboard-wrapper">
             <div className="dashboard-container">
@@ -72,7 +78,6 @@ const Layout = () => {
                         <span>TransitOps</span>
                     </div>
                     <nav className="sidebar-nav">
-                        {/* Dashboard (Always visible) */}
                         <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-th-large"></i>
                             <span>Dashboard</span>
@@ -126,14 +131,6 @@ const Layout = () => {
                             </NavLink>
                         )}
 
-                        {/* Analytics – governed by 'analytics' permission */}
-                        {canAccess('analytics') && (
-                            <a href="#analytics" onClick={(e) => e.preventDefault()}>
-                                <i className="fas fa-chart-line"></i>
-                                <span>Analytics</span>
-                            </a>
-                        )}
-
                         {/* Roadside Documents – Admin only */}
                         {role === 'admin' && (
                             <NavLink to="/documents" className={({ isActive }) => isActive ? "active" : ""}>
@@ -142,7 +139,15 @@ const Layout = () => {
                             </NavLink>
                         )}
 
-                        {/* Settings & RBAC – Admin only */}
+                        {/* Analytics – governed by 'analytics' permission */}
+                        {canAccess('analytics') && (
+                            <NavLink to="/analytics" className={({ isActive }) => isActive ? "active" : ""}>
+                                <i className="fas fa-chart-line"></i>
+                                <span>Analytics</span>
+                            </NavLink>
+                        )}
+
+                        {/* Settings – Admin only */}
                         {role === 'admin' && (
                             <NavLink to="/settings" className={({ isActive }) => isActive ? "active" : ""}>
                                 <i className="fas fa-cog"></i>
@@ -158,10 +163,10 @@ const Layout = () => {
                     </div>
                 </aside>
 
-    {/* Main Shared Content Area */ }
-    < main className = "main-content" >
-        {/* Unified Premium Header */ }
-        < header className = "main-header" >
+                {/* Main Shared Content Area */}
+                <main className="main-content">
+                    {/* Unified Premium Header */}
+                    <header className="main-header">
                         <div className="header-left">
                             <h1>{title}</h1>
                             <p>{subtitle}</p>
@@ -188,13 +193,13 @@ const Layout = () => {
                                 {user?.username?.charAt(0).toUpperCase()}
                             </div>
                         </div>
-                    </header >
+                    </header>
 
-    {/* Active Route Content */ }
-    < Outlet />
-                </main >
-            </div >
-        </div >
+                    {/* Active Route Content */}
+                    <Outlet />
+                </main>
+            </div>
+        </div>
     );
 };
 
