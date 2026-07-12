@@ -153,13 +153,32 @@ class TripViewSet(viewsets.ModelViewSet):
     def complete_trip(self, request, pk=None):
         trip = self.get_object()
         try:
-            trip.complete_trip()
+            final_odometer      = request.data.get('final_odometer')
+            fuel_consumed       = request.data.get('fuel_consumed')
+            fuel_cost_per_liter = request.data.get('fuel_cost_per_liter')
+
+            # Convert types safely
+            if final_odometer is not None:
+                final_odometer = int(final_odometer)
+            if fuel_consumed is not None:
+                fuel_consumed = float(fuel_consumed)
+            if fuel_cost_per_liter is not None:
+                fuel_cost_per_liter = float(fuel_cost_per_liter)
+
+            trip.complete_trip(
+                final_odometer=final_odometer,
+                fuel_consumed=fuel_consumed,
+                fuel_cost_per_liter=fuel_cost_per_liter,
+            )
             return Response({
                 "status": "Trip Completed Successfully",
-                "trip": TripSerializer(trip).data
+                "trip": TripSerializer(trip).data,
+                "fuel_logged": fuel_consumed is not None and fuel_consumed > 0,
             })
         except DjangoValidationError as e:
             return Response({"error": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+        except (ValueError, TypeError) as e:
+            return Response({"error": f"Invalid numeric value: {e}"}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'])
     def cancel_trip(self, request, pk=None):

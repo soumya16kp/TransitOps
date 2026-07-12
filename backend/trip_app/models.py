@@ -43,6 +43,22 @@ class Trip(models.Model):
         default=TripStatus.DRAFT
     )
 
+    # ── Completion fields (filled when trip is completed) ─────────────────────
+    final_odometer      = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text="Final odometer reading (km) when trip completed."
+    )
+    fuel_consumed       = models.DecimalField(
+        max_digits=8, decimal_places=2,
+        null=True, blank=True,
+        help_text="Total fuel consumed during trip (liters)."
+    )
+    fuel_cost_per_liter = models.DecimalField(
+        max_digits=8, decimal_places=2,
+        null=True, blank=True,
+        help_text="Fuel price per liter at time of completion (₹)."
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -167,15 +183,28 @@ class Trip(models.Model):
         self.driver.save(update_fields=['status'])
 
     @transaction.atomic
-    def complete_trip(self):
+    def complete_trip(self, final_odometer=None, fuel_consumed=None, fuel_cost_per_liter=None):
         """
         Rule 7: Completing a trip restores vehicle and driver to Available.
+        Optionally records final odometer and fuel consumed, auto-creating a FuelLog.
         """
         if self.status != self.TripStatus.DISPATCHED:
             raise ValidationError("Only dispatched trips can be completed.")
 
+        # Save completion data
+        if final_odometer is not None:
+            self.final_odometer = final_odometer
+            # Update vehicle odometer
+            if self.vehicle.odometer < final_odometer:
+                self.vehicle.odometer = final_odometer
+                self.vehicle.save(update_fields=['odometer', 'status'])
+        if fuel_consumed is not None:
+            self.fuel_consumed = fuel_consumed
+        if fuel_cost_per_liter is not None:
+            self.fuel_cost_per_liter = fuel_cost_per_liter
+
         self.status = self.TripStatus.COMPLETED
-        self.save(update_fields=['status'])
+        self.save(update_fields=['status', 'final_odometer', 'fuel_consumed', 'fuel_cost_per_liter'])
 
         # Restore vehicle — only if not Retired
         if self.vehicle.status != 'Retired':
@@ -184,6 +213,29 @@ class Trip(models.Model):
 
         self.driver.status = 'AVAILABLE'
         self.driver.save(update_fields=['status'])
+
+        # Auto-create a trip-linked FuelLog if fuel data provided
+        if fuel_consumed and fuel_consumed > 0:
+            from expenses.models import FuelLog
+            from django.contrib.auth import get_user_model
+            total_cost = (
+                float(fuel_consumed) * float(fuel_cost_per_liter)
+                if fuel_cost_per_liter else 0.0
+            )
+            # Use system admin as fallback user (FuelLog requires a user FK)
+            User = get_user_model()
+            system_user = User.objects.filter(role='admin').first() or User.objects.first()
+            FuelLog.objects.update_or_create(
+                trip=self,
+                defaults={
+                    'user': system_user,
+                    'vehicle': self.vehicle.registration_no,
+                    'date': date.today(),
+                    'liters': fuel_consumed,
+                    'cost_per_liter': fuel_cost_per_liter or 0,
+                    'fuel_cost': total_cost,
+                }
+            )
 
     @transaction.atomic
     def cancel_trip(self):
