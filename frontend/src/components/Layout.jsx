@@ -1,12 +1,10 @@
 import React from 'react';
-import { Outlet, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useRBAC } from '../context/RBACContext';
 import '../styles/dashboard.css';
 
 const Layout = () => {
-    const { user, role, roleDisplay, logout } = useAuth();
-    const { canAccess } = useRBAC();
+    const { user, roleDisplay, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -22,9 +20,6 @@ const Layout = () => {
     if (location.pathname === '/registry') {
         title = "Fleet Registry";
         subtitle = "Manage and track company fleet details";
-    } else if (location.pathname === '/drivers') {
-        title = "Drivers";
-        subtitle = "Manage driver profiles and compliance";
     } else if (location.pathname === '/maintenance') {
         title = "Maintenance";
         subtitle = "Log, track, and resolve vehicle servicing records";
@@ -40,6 +35,9 @@ const Layout = () => {
     } else if (location.pathname === '/tasks') {
         title = "Execution Board";
         subtitle = "Real-time Kanban view of all trip lifecycle phases";
+    } else if (location.pathname === '/documents') {
+        title = "Roadside Documents";
+        subtitle = "Manage critical legal vehicle documents for roadside checks";
     }
 
     // Guard: redirect to /dashboard if user tries to access a restricted page directly
@@ -65,7 +63,6 @@ const Layout = () => {
                         <span>TransitOps</span>
                     </div>
                     <nav className="sidebar-nav">
-                        {/* Dashboard – always visible */}
                         <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-th-large"></i>
                             <span>Dashboard</span>
@@ -149,6 +146,16 @@ const Layout = () => {
             </NavLink>
         )
     }
+
+    {/* Documents – admin only */ }
+    {
+        role === 'admin' && (
+            <NavLink to="/documents" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-file-alt"></i>
+                <span>Documents</span>
+            </NavLink>
+        )
+    }
                     </nav >
     <div className="sidebar-footer">
         <button onClick={handleLogout} className="logout-btn">
@@ -169,7 +176,7 @@ const Layout = () => {
                         <div className="header-right">
                             <div className="notification-bell">
                                 <i className="fas fa-bell"></i>
-                                <span className="badge" style={{ border: 'none' }}>3</span>
+                                <span className="badge">3</span>
                             </div>
                             {roleDisplay && (
                                 <span style={{

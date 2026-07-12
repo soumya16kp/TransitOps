@@ -1,10 +1,24 @@
 from rest_framework import serializers
-from .models import Vehicle
+from .models import Vehicle, VehicleDocument
+import os
 
+class VehicleDocumentSerializer(serializers.ModelSerializer):
+    file_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = VehicleDocument
+        fields = ['id', 'document_type', 'file', 'file_name', 'uploaded_at']
+        read_only_fields = ['id', 'file_name', 'uploaded_at']
+
+    def get_file_name(self, obj):
+        if obj.file and hasattr(obj.file, 'name'):
+            return os.path.basename(obj.file.name)
+        return ""
 
 class VehicleSerializer(serializers.ModelSerializer):
     status_display       = serializers.SerializerMethodField()
     vehicle_type_display = serializers.SerializerMethodField()
+    documents            = VehicleDocumentSerializer(many=True, read_only=True)
 
     class Meta:
         model  = Vehicle
@@ -20,11 +34,12 @@ class VehicleSerializer(serializers.ModelSerializer):
             'status',
             'status_display',
             'notes',
+            'documents',
             'created_at',
             'updated_at',
         ]
         read_only_fields = ['id', 'created_at', 'updated_at',
-                            'status_display', 'vehicle_type_display']
+                            'status_display', 'vehicle_type_display', 'documents']
 
     def get_status_display(self, obj):
         return obj.get_status_display()

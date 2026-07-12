@@ -65,3 +65,32 @@ class Vehicle(models.Model):
                 return int(num * 0.453592)
             return int(num)
         return 1000
+
+
+class VehicleDocument(models.Model):
+    RC = 'RC'
+    DL = 'DL'
+    INSURANCE = 'Insurance'
+    PUC = 'PUC'
+    PERMIT_FITNESS = 'Permit_Fitness'
+
+    DOC_TYPE_CHOICES = [
+        (RC, 'Registration Certificate (RC)'),
+        (DL, 'Driving Licence (DL)'),
+        (INSURANCE, 'Motor Insurance Policy'),
+        (PUC, 'Pollution Under Control (PUC) Certificate'),
+        (PERMIT_FITNESS, 'Commercial Permits & Fitness Certificate'),
+    ]
+
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='documents')
+    document_type = models.CharField(max_length=50, choices=DOC_TYPE_CHOICES)
+    file = models.FileField(upload_to='vehicle_documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('vehicle', 'document_type')
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"{self.vehicle.registration_no} - {self.document_type}"
+

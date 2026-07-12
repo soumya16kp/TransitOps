@@ -1,5 +1,5 @@
 // src/pages/Maintenance/Maintenance.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import MaintenanceService from '../../services/MaintenanceService';
 import registryService from '../../services/RegistryService';
 import './Maintenance.css';
@@ -17,6 +17,54 @@ const Maintenance = () => {
     const [records, setRecords]   = useState([]);
     const [loadingLogs, setLoadingLogs] = useState(true);
     const [error, setError]       = useState('');
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+    const requestSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const sortedRecords = useMemo(() => {
+        let sortableItems = [...records];
+        if (sortConfig.key !== null) {
+            sortableItems.sort((a, b) => {
+                let aValue, bValue;
+                if (sortConfig.key === 'vehicle') {
+                    aValue = a.vehicle_name || '';
+                    bValue = b.vehicle_name || '';
+                } else if (sortConfig.key === 'cost') {
+                    aValue = Number(a.cost) || 0;
+                    bValue = Number(b.cost) || 0;
+                } else {
+                    aValue = a[sortConfig.key] || '';
+                    bValue = b[sortConfig.key] || '';
+                }
+                
+                if (typeof aValue === 'string') {
+                    return sortConfig.direction === 'asc' 
+                        ? aValue.localeCompare(bValue) 
+                        : bValue.localeCompare(aValue);
+                } else {
+                    return sortConfig.direction === 'asc'
+                        ? aValue - bValue
+                        : bValue - aValue;
+                }
+            });
+        }
+        return sortableItems;
+    }, [records, sortConfig]);
+
+    const getSortIcon = (key) => {
+        if (sortConfig.key !== key) {
+            return <i className="fas fa-sort sort-placeholder"></i>;
+        }
+        return sortConfig.direction === 'asc' 
+            ? <i className="fas fa-sort-up sorted"></i> 
+            : <i className="fas fa-sort-down sorted"></i>;
+    };
 
     // Form State
     const [form, setForm] = useState({
@@ -244,15 +292,23 @@ const Maintenance = () => {
                         <table className="maintenance-table">
                             <thead>
                                 <tr>
-                                    <th>Vehicle</th>
-                                    <th>Service</th>
-                                    <th>Cost</th>
-                                    <th>Status</th>
+                                    <th onClick={() => requestSort('vehicle')} className="sortable-header">
+                                        Vehicle {getSortIcon('vehicle')}
+                                    </th>
+                                    <th onClick={() => requestSort('service_type')} className="sortable-header">
+                                        Service {getSortIcon('service_type')}
+                                    </th>
+                                    <th onClick={() => requestSort('cost')} className="sortable-header">
+                                        Cost {getSortIcon('cost')}
+                                    </th>
+                                    <th onClick={() => requestSort('status')} className="sortable-header">
+                                        Status {getSortIcon('status')}
+                                    </th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {records.map((r) => (
+                                {sortedRecords.map((r) => (
                                     <tr key={r.id}>
                                         <td>
                                             <div style={{ fontWeight: 600 }}>{r.vehicle_name}</div>

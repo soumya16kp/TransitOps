@@ -14,6 +14,7 @@ import FuelExpenses from './pages/fuel/FuelExpenses';
 import TripDispatcher from './pages/trips/TripDispatcher';
 import Settings from './pages/settings/Settings';
 import Tasks from './pages/Tasks/Tasks';
+import Documents from './pages/documents/Documents';
 function App() {
     return (
         <AuthProvider>
@@ -36,6 +37,7 @@ function App() {
                                 <Route path="/dispatcher" element={<TripDispatcher />} />
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/tasks" element={<Tasks />} />
+                                <Route path="/documents" element={<Documents />} />
                             </Route >
                         </Route >
                     </Routes >
@@ -46,5 +48,3 @@ function App() {
 }
 
 export default App;
-
-// Test comment to verify commit contributor name and email settings.
