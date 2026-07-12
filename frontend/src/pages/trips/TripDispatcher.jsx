@@ -139,7 +139,26 @@ const TripDispatcher = () => {
     };
 
     // ─── Action handler for Live Board buttons ──────────────────────────────
+    const [selectedTripToComplete, setSelectedTripToComplete] = useState(null);
+    const [completionData, setCompletionData] = useState({
+        finalOdometer: '',
+        fuelConsumed: '',
+        fuelCostPerLiter: ''
+    });
+
     const handleAction = async (tripId, actionType) => {
+        if (actionType === 'complete_trip') {
+            const trip = trips.find(t => t.id === tripId);
+            setSelectedTripToComplete(trip);
+            // Default odometer to current vehicle odometer or trip distance
+            setCompletionData({
+                finalOdometer: trip.vehicle_odometer || '',
+                fuelConsumed: '',
+                fuelCostPerLiter: ''
+            });
+            return;
+        }
+
         setLoading(prev => ({ ...prev, [`${tripId}_${actionType}`]: true }));
         try {
             const res = await axios.post(`http://localhost:8000/api/trips/${tripId}/${actionType}/`);
@@ -155,6 +174,32 @@ const TripDispatcher = () => {
         }
     };
 
+    const handleCompleteSubmit = async (e) => {
+        e.preventDefault();
+        if (!selectedTripToComplete) return;
+        const tripId = selectedTripToComplete.id;
+        
+        setLoading(prev => ({ ...prev, [`${tripId}_complete_trip`]: true }));
+        try {
+            const res = await axios.post(`http://localhost:8000/api/trips/${tripId}/complete_trip/`, {
+                final_odometer: completionData.finalOdometer,
+                fuel_consumed: completionData.fuelConsumed || null,
+                fuel_cost_per_liter: completionData.fuelCostPerLiter || null
+            });
+            if (res.status >= 200 && res.status < 300) {
+                setSelectedTripToComplete(null);
+                setCompletionData({ finalOdometer: '', fuelConsumed: '', fuelCostPerLiter: '' });
+                fetchTrips();
+                fetchAvailableResources();
+            }
+        } catch (err) {
+            const msg = err.response?.data?.error;
+            alert('Completion failed: ' + (Array.isArray(msg) ? msg.join(', ') : msg || err.message));
+        } finally {
+            setLoading(prev => ({ ...prev, [`${tripId}_complete_trip`]: false }));
+        }
+    };
+
     const isActionLoading = (tripId, actionType) => !!loading[`${tripId}_${actionType}`];
 
     const formIsValid = formData.source && formData.destination && formData.vehicle
@@ -162,6 +207,78 @@ const TripDispatcher = () => {
 
     return (
         <div className="dispatcher-container">
+            {/* ── Modal overlay for trip completion ── */}
+            {selectedTripToComplete && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.75)', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+                    backdropFilter: 'blur(4px)'
+                }}>
+                    <div style={{
+                        backgroundColor: '#111827', border: '1px solid #374151',
+                        borderRadius: '12px', padding: '24px', width: '400px',
+                        boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
+                    }}>
+                        <h3 style={{ color: '#fff', marginBottom: '16px', fontSize: '1.1rem', borderBottom: '1px solid #1f2937', paddingBottom: '10px' }}>
+                            ✓ Complete Trip {selectedTripToComplete.tracking_number}
+                        </h3>
+                        <form onSubmit={handleCompleteSubmit}>
+                            <div className="form-group">
+                                <label>Final Odometer Reading (KM)</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={completionData.finalOdometer}
+                                    onChange={(e) => setCompletionData({ ...completionData, finalOdometer: e.target.value })}
+                                    required
+                                    placeholder="e.g. 12500"
+                                />
+                            </div>
+                            <div className="form-group" style={{ marginTop: '14px' }}>
+                                <label>Fuel Consumed (Liters) — Optional</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    className="form-control"
+                                    value={completionData.fuelConsumed}
+                                    onChange={(e) => setCompletionData({ ...completionData, fuelConsumed: e.target.value })}
+                                    placeholder="e.g. 45.5"
+                                />
+                            </div>
+                            <div className="form-group" style={{ marginTop: '14px' }}>
+                                <label>Fuel Cost Per Liter (₹) — Optional</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    className="form-control"
+                                    value={completionData.fuelCostPerLiter}
+                                    onChange={(e) => setCompletionData({ ...completionData, fuelCostPerLiter: e.target.value })}
+                                    placeholder="e.g. 96.50"
+                                />
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '24px' }}>
+                                <button
+                                    type="button"
+                                    className="btn-action cancel"
+                                    style={{ padding: '8px 16px', textTransform: 'capitalize' }}
+                                    onClick={() => setSelectedTripToComplete(null)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="btn-action complete"
+                                    style={{ padding: '8px 16px', textTransform: 'capitalize' }}
+                                    disabled={isActionLoading(selectedTripToComplete.id, 'complete_trip')}
+                                >
+                                    {isActionLoading(selectedTripToComplete.id, 'complete_trip') ? 'Saving...' : 'Complete Trip'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
             {/* ── LEFT: Dispatch Form ── */}
             <div className="form-section">
                 <h2>Trip Dispatcher</h2>
