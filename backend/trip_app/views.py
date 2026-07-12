@@ -119,11 +119,16 @@ class TripViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, TripsPermission]
 
     def get_queryset(self):
+        """Support ?status= filtering for the live board and kanban board."""
         ensure_trips_seeded()
-        return Trip.objects.all().order_by('-created_at')
+        queryset = Trip.objects.select_related('vehicle', 'driver').all()
+        status_filter = self.request.query_params.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        return queryset.order_by('-created_at')
 
     def create(self, request, *args, **kwargs):
-        # Catch model-level validation errors during creation
+        """Catch model-level validation errors during creation."""
         try:
             return super().create(request, *args, **kwargs)
         except DjangoValidationError as e:
@@ -134,7 +139,33 @@ class TripViewSet(viewsets.ModelViewSet):
         trip = self.get_object()
         try:
             trip.dispatch_trip()
-            return Response({"status": "Trip Dispatched Successfully", "trip": TripSerializer(trip).data})
+            return Response({
+                "status": "Trip Dispatched Successfully",
+                "trip": TripSerializer(trip).data
+            })
         except DjangoValidationError as e:
-            # E.g., Capacity exceeded, or Driver suspended
+            return Response({"error": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def complete_trip(self, request, pk=None):
+        trip = self.get_object()
+        try:
+            trip.complete_trip()
+            return Response({
+                "status": "Trip Completed Successfully",
+                "trip": TripSerializer(trip).data
+            })
+        except DjangoValidationError as e:
+            return Response({"error": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def cancel_trip(self, request, pk=None):
+        trip = self.get_object()
+        try:
+            trip.cancel_trip()
+            return Response({
+                "status": "Trip Cancelled",
+                "trip": TripSerializer(trip).data
+            })
+        except DjangoValidationError as e:
             return Response({"error": e.messages}, status=status.HTTP_400_BAD_REQUEST)

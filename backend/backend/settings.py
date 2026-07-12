@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'maintenance_app',
     'expenses',
     'trip_app',
+    'task_app',
 ]
 
 MIDDLEWARE = [
