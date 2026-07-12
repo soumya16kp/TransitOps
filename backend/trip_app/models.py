@@ -78,7 +78,7 @@ class Trip(models.Model):
     def dispatch_trip(self):
         if self.status != self.TripStatus.DRAFT:
             raise ValidationError("Only Draft trips can be dispatched.")
-        if self.vehicle.status != 'AVAILABLE' or self.driver.status != 'AVAILABLE':
+        if self.vehicle.status != 'Available' or self.driver.status != 'AVAILABLE':
             raise ValidationError("Both Vehicle and Driver must be Available.")
         
         # Run clean to ensure rules are respected right before dispatch
@@ -89,7 +89,7 @@ class Trip(models.Model):
         self.save(update_fields=['status'])
         
         # Change Vehicle & Driver Status (Atomic)
-        self.vehicle.status = 'ON_TRIP'
+        self.vehicle.status = 'On Trip'
         self.vehicle.save(update_fields=['status'])
         
         self.driver.status = 'ON_TRIP'
@@ -103,7 +103,7 @@ class Trip(models.Model):
         self.status = self.TripStatus.COMPLETED
         self.save(update_fields=['status'])
         
-        self.vehicle.status = 'AVAILABLE'
+        self.vehicle.status = 'Available'
         self.vehicle.save(update_fields=['status'])
         
         self.driver.status = 'AVAILABLE'
@@ -120,7 +120,7 @@ class Trip(models.Model):
         
         # Only revert resources if they were actually dispatched
         if was_dispatched:
-            self.vehicle.status = 'AVAILABLE'
+            self.vehicle.status = 'Available'
             self.vehicle.save(update_fields=['status'])
             
             self.driver.status = 'AVAILABLE'

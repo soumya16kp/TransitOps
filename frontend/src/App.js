@@ -10,6 +10,7 @@ import VehicleRegistry from './pages/Registry/VehicleRegistry';
 import Drivers from './pages/driver/Drivers';
 import Maintenance from './pages/Maintenance/Maintenance';
 import FuelExpenses from './pages/fuel/FuelExpenses';
+import TripDispatcher from './pages/trips/TripDispatcher';
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                                 <Route path="/drivers"       element={<Drivers />} />
                                 <Route path="/maintenance"   element={<Maintenance />} />
                                 <Route path="/fuel-expenses" element={<FuelExpenses />} />
+                                <Route path="/dispatcher"    element={<TripDispatcher />} />
                             </Route>
                         </Route>
                     </Routes>

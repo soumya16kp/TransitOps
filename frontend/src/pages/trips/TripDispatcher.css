@@ -1,0 +1,76 @@
+.dispatcher-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  padding: 24px;
+  background-color: #0b0f19;
+  color: #e5e7eb;
+  min-height: 100vh;
+}
+
+.form-section, .live-board-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  background-color: #111827;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #60a5fa;
+}
+
+.error-box {
+  background-color: rgba(248, 113, 113, 0.1);
+  border: 1px solid #f87171;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  color: #f87171;
+}
+
+.btn-dispatch {
+  background-color: #374151;
+  color: #9ca3af;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: not-allowed;
+  font-weight: bold;
+  width: 48%;
+}
+
+.btn-dispatch.active {
+  background-color: #4ade80;
+  color: #064e3b;
+  cursor: pointer;
+}
+
+.live-board-card {
+  border: 1px dashed #374151;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

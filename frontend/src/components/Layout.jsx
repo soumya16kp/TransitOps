@@ -29,6 +29,9 @@ const Layout = () => {
     } else if (location.pathname === '/fuel-expenses') {
         title = "Fuel & Expense Management";
         subtitle = "Track fleet fuel consumption and operational expenditures";
+    } else if (location.pathname === '/dispatcher') {
+        title = "Trip Dispatcher";
+        subtitle = "Create, dispatch, and track live trips";
     }
 
     return (
@@ -57,10 +60,10 @@ const Layout = () => {
                             <i className="fas fa-tasks"></i>
                             <span>Tasks</span>
                         </a>
-                        <a href="#trips" onClick={(e) => e.preventDefault()}>
+                        <NavLink to="/dispatcher" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-route"></i>
                             <span>Trips</span>
-                        </a>
+                        </NavLink>
                         <NavLink to="/maintenance" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-tools"></i>
                             <span>Maintenance</span>

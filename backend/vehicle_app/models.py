@@ -47,3 +47,21 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f"{self.registration_no} – {self.name} ({self.vehicle_type})"
+
+    @property
+    def max_load_capacity(self):
+        import re
+        val = self.capacity.lower().strip()
+        match = re.search(r'([\d\.,]+)', val)
+        if match:
+            num_str = match.group(1).replace(',', '')
+            try:
+                num = float(num_str)
+            except ValueError:
+                return 1000
+            if 'ton' in val or 't' in val:
+                return int(num * 1000)
+            elif 'lbs' in val or 'lb' in val:
+                return int(num * 0.453592)
+            return int(num)
+        return 1000
