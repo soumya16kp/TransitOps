@@ -2,12 +2,15 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.core.exceptions import ValidationError as DjangoValidationError
+from core.permissions import TripsPermission
+from rest_framework.permissions import IsAuthenticated
 from .models import Trip
 from .serializers import TripSerializer
 
 class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
+    permission_classes = [IsAuthenticated, TripsPermission]
 
     def create(self, request, *args, **kwargs):
         # Catch model-level validation errors during creation

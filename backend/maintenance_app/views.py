@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from core.permissions import FleetPermission
 
 from .models import ServiceRecord
 from .serializers import ServiceRecordSerializer
@@ -12,7 +13,7 @@ class ServiceRecordListCreateView(APIView):
     GET  /api/maintenance/  → list all maintenance records
     POST /api/maintenance/  → log new maintenance record
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, FleetPermission]
 
     def get(self, request):
         queryset = ServiceRecord.objects.all()
@@ -44,7 +45,7 @@ class ServiceRecordDetailView(APIView):
     PATCH  /api/maintenance/<pk>/  → partial update (e.g. status transition)
     DELETE /api/maintenance/<pk>/  → delete
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, FleetPermission]
 
     def get_object(self, pk):
         try:

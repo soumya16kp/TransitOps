@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
+from core.permissions import DriverPermission
 
 from .models import Driver
 from .serializers import DriverSerializer
@@ -13,7 +14,7 @@ class DriverListCreateView(APIView):
     GET  /api/drivers/          → list all drivers
     POST /api/drivers/          → create a new driver
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DriverPermission]
 
     def get(self, request):
         queryset = Driver.objects.all()
@@ -53,7 +54,7 @@ class DriverDetailView(APIView):
     PATCH  /api/drivers/<pk>/   → partial update
     DELETE /api/drivers/<pk>/   → delete
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DriverPermission]
 
     def get_object(self, pk):
         try:
@@ -98,7 +99,7 @@ class DriverDetailView(APIView):
 
 class DriverChoicesView(APIView):
     """GET /api/drivers/choices/ → returns valid license categories & status choices."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DriverPermission]
 
     def get(self, request):
         return Response({

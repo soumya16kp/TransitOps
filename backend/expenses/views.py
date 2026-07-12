@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from django.db import models
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
+from core.permissions import FuelExpensesPermission
 from .models import FuelLog, Expense
 from .serializers import FuelLogSerializer, ExpenseSerializer
 
@@ -15,7 +16,7 @@ def ensure_seeded(user):
         Expense.objects.create(user=user, trip='TR002', vehicle='TRK-12', toll=340.00, other=150.00, maint_linked=18000.00, status='Completed')
 
 class FuelLogListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, FuelExpensesPermission]
     serializer_class = FuelLogSerializer
 
     def get_queryset(self):
@@ -26,7 +27,7 @@ class FuelLogListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 class ExpenseListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, FuelExpensesPermission]
     serializer_class = ExpenseSerializer
 
     def get_queryset(self):
@@ -37,7 +38,7 @@ class ExpenseListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 class ExpenseSummaryAPIView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, FuelExpensesPermission]
 
     def get(self, request):
         user = request.user

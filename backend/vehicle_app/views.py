@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
+from core.permissions import FleetPermission
 
 from .models import Vehicle
 from .serializers import VehicleSerializer
@@ -13,7 +14,7 @@ class VehicleListCreateView(APIView):
     GET  /api/vehicles/          → list all vehicles (supports ?type=&status=&search=)
     POST /api/vehicles/          → create a new vehicle
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, FleetPermission]
 
     def get(self, request):
         queryset = Vehicle.objects.all()
@@ -53,7 +54,7 @@ class VehicleDetailView(APIView):
     PATCH  /api/vehicles/<pk>/   → partial update
     DELETE /api/vehicles/<pk>/   → delete
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, FleetPermission]
 
     def get_object(self, pk):
         try:
@@ -110,7 +111,7 @@ class VehicleDetailView(APIView):
 
 class VehicleChoicesView(APIView):
     """GET /api/vehicles/choices/ → returns valid type & status choices."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, FleetPermission]
 
     def get(self, request):
         return Response({
