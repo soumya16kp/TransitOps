@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'auth_app',
     'core',
     'vehicle_app',
+    'driver_app',
 ]
 
 MIDDLEWARE = [

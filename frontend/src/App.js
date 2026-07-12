@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import VehicleRegistry from './pages/Registry/VehicleRegistry';
+import Drivers from './pages/driver/Drivers';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                             <Route element={<Layout />}>
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/registry"  element={<VehicleRegistry />} />
+                                <Route path="/drivers"   element={<Drivers />} />
                             </Route>
                         </Route>
                     </Routes>

@@ -20,6 +20,9 @@ const Layout = () => {
     if (location.pathname === '/registry') {
         title = "Vehicle Registry";
         subtitle = "Manage and track company fleet details";
+    } else if (location.pathname === '/drivers') {
+        title = "Drivers";
+        subtitle = "Manage driver profiles and compliance";
     }
 
     return (
@@ -39,6 +42,10 @@ const Layout = () => {
                         <NavLink to="/registry" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-bus-alt"></i>
                             <span>Vehicle Registry</span>
+                        </NavLink>
+                        <NavLink to="/drivers" className={({ isActive }) => isActive ? "active" : ""}>
+                            <i className="fas fa-id-card"></i>
+                            <span>Drivers</span>
                         </NavLink>
                         <a href="#tasks">
                             <i className="fas fa-tasks"></i>
