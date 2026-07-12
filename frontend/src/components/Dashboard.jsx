@@ -3,14 +3,31 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import '../styles/dashboard.css';
 
-/* ── Mock recent trips (until a Trips API exists) ─────── */
-const MOCK_TRIPS = [
-    { id: 'TR001', vehicle: 'VAN-05', driver: 'Alex', status: 'On Trip',    eta: '45 min' },
-    { id: 'TR002', vehicle: 'TRK-12', driver: 'John', status: 'Completed',  eta: '—' },
-    { id: 'TR003', vehicle: 'MINI-09', driver: 'Priya', status: 'Dispatched', eta: '1h 10m' },
-    { id: 'TR004', vehicle: '—',      driver: '—',    status: 'Draft',      eta: 'Awaiting vehicle' },
-    { id: 'TR005', vehicle: 'BUS-02', driver: 'Carlos', status: 'On Trip',  eta: '20 min' },
-];
+const normalizeTripStatus = (status) => {
+    switch ((status || '').toUpperCase()) {
+        case 'DISPATCHED':
+        case 'ON_TRIP':
+        case 'ON TRIP':
+            return 'On Trip';
+        case 'COMPLETED':
+            return 'Completed';
+        case 'DRAFT':
+            return 'Draft';
+        case 'CANCELLED':
+            return 'Cancelled';
+        default:
+            return status || 'Draft';
+    }
+};
+
+const getTripEtaLabel = (trip) => {
+    const status = (trip?.status || '').toUpperCase();
+    if (status === 'COMPLETED') return 'Completed';
+    if (status === 'DRAFT') return 'Awaiting dispatch';
+    if (status === 'DISPATCHED') return `${trip?.planned_distance || 0} km planned`;
+    if (status === 'CANCELLED') return 'Cancelled';
+    return '—';
+};
 
 /* ── SVG Donut Gauge ─────────────────────────────────────*/
 const DonutGauge = ({ pct }) => {
@@ -48,12 +65,14 @@ const TripBadge = ({ status }) => {
         'Completed':  'badge badge-completed',
         'Dispatched': 'badge badge-dispatched',
         'Draft':      'badge badge-draft',
+        'Cancelled':  'badge badge-retired',
     };
     const dotMap = {
         'On Trip':    '●',
         'Completed':  '✓',
         'Dispatched': '▶',
         'Draft':      '○',
+        'Cancelled':  '✕',
     };
     return <span className={map[status] || 'badge badge-draft'}>{dotMap[status] || '○'} {status}</span>;
 };
@@ -79,6 +98,7 @@ const Dashboard = () => {
     const [vehicles,     setVehicles]     = useState([]);
     const [maintenance,  setMaintenance]  = useState([]);
     const [drivers,      setDrivers]      = useState([]);
+    const [trips,        setTrips]        = useState([]);
     const [loading,      setLoading]      = useState(true);
 
     /* Filter state */
@@ -89,14 +109,16 @@ const Dashboard = () => {
     const fetchAll = useCallback(async () => {
         setLoading(true);
         try {
-            const [vRes, mRes, dRes] = await Promise.all([
-                axios.get('http://localhost:8000/api/vehicles/'),
-                axios.get('http://localhost:8000/api/maintenance/'),
+            const [tRes, vRes, mRes, dRes] = await Promise.all([
+                axios.get('http://localhost:8000/api/trips/').catch(() => ({ data: [] })),
+                axios.get('http://localhost:8000/api/vehicles/').catch(() => ({ data: [] })),
+                axios.get('http://localhost:8000/api/maintenance/').catch(() => ({ data: [] })),
                 axios.get('http://localhost:8000/api/drivers/').catch(() => ({ data: [] })),
             ]);
-            setVehicles(vRes.data);
-            setMaintenance(mRes.data);
-            setDrivers(dRes.data);
+            setTrips(Array.isArray(tRes.data) ? tRes.data : []);
+            setVehicles(Array.isArray(vRes.data) ? vRes.data : []);
+            setMaintenance(Array.isArray(mRes.data) ? mRes.data : []);
+            setDrivers(Array.isArray(dRes.data) ? dRes.data : []);
         } catch (err) {
             console.error('Dashboard fetch error', err);
         } finally {
@@ -112,9 +134,10 @@ const Dashboard = () => {
     const onTripVehicles    = vehicles.filter(v => v.status === 'On Trip').length;
     const inShopVehicles    = vehicles.filter(v => v.status === 'In Shop').length;
     const retiredVehicles   = vehicles.filter(v => v.status === 'Retired').length;
-    const activeTrips       = MOCK_TRIPS.filter(t => t.status === 'On Trip').length;
-    const pendingTrips      = MOCK_TRIPS.filter(t => t.status === 'Draft' || t.status === 'Dispatched').length;
-    const driversOnDuty     = drivers.filter(d => d.status === 'AVAILABLE' || d.status === 'ON_DUTY').length || drivers.length;
+    const normalizedTripStatuses = trips.map(t => normalizeTripStatus(t.status));
+    const activeTrips       = normalizedTripStatuses.filter(status => status === 'On Trip').length;
+    const pendingTrips      = normalizedTripStatuses.filter(status => status === 'Draft' || status === 'Dispatched').length;
+    const driversOnDuty     = drivers.filter(d => d.status === 'AVAILABLE' || d.status === 'ON_DUTY').length;
     const activeMaintenance = maintenance.filter(m => m.status === 'Active').length;
 
     /* Fleet utilization = (available + on_trip) / total */
@@ -242,15 +265,24 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {MOCK_TRIPS.map(t => (
-                                <tr key={t.id}>
-                                    <td className="trip-id">{t.id}</td>
-                                    <td style={{ fontWeight: 600, fontFamily: 'monospace', fontSize: '0.82rem' }}>{t.vehicle}</td>
-                                    <td>{t.driver}</td>
-                                    <td><TripBadge status={t.status} /></td>
-                                    <td style={{ color: '#7b8299', fontSize: '0.8rem' }}>{t.eta}</td>
+                            {trips.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" className="dash-empty">No trips available yet.</td>
                                 </tr>
-                            ))}
+                            ) : trips.slice(0, 6).map(t => {
+                                const status = normalizeTripStatus(t.status);
+                                return (
+                                    <tr key={t.id}>
+                                        <td className="trip-id">{t.tracking_number || t.id}</td>
+                                        <td style={{ fontWeight: 600, fontFamily: 'monospace', fontSize: '0.82rem' }}>
+                                            {t.vehicle_registration || t.vehicle_name || '—'}
+                                        </td>
+                                        <td>{t.driver_name || '—'}</td>
+                                        <td><TripBadge status={status} /></td>
+                                        <td style={{ color: '#7b8299', fontSize: '0.8rem' }}>{getTripEtaLabel(t)}</td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
