@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
-from core.permissions import FleetPermission
+from core.permissions import FleetPermission, IsAdmin
 
-from .models import Vehicle
-from .serializers import VehicleSerializer
+from .models import Vehicle, VehicleDocument
+from .serializers import VehicleSerializer, VehicleDocumentSerializer
 
 
 class VehicleListCreateView(APIView):
@@ -118,3 +118,66 @@ class VehicleChoicesView(APIView):
             'types':    [{'value': k, 'label': v} for k, v in Vehicle.TYPE_CHOICES],
             'statuses': [{'value': k, 'label': v} for k, v in Vehicle.STATUS_CHOICES],
         })
+
+
+class VehicleDocumentUploadView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def post(self, request):
+        vehicle_id = request.data.get('vehicle_id')
+        document_type = request.data.get('document_type')
+        uploaded_file = request.FILES.get('file')
+
+        if not vehicle_id or not document_type or not uploaded_file:
+            return Response(
+                {'error': 'Missing vehicle_id, document_type, or file'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            vehicle = Vehicle.objects.get(id=vehicle_id)
+        except Vehicle.DoesNotExist:
+            return Response(
+                {'error': 'Vehicle not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        valid_types = [t[0] for t in VehicleDocument.DOC_TYPE_CHOICES]
+        if document_type not in valid_types:
+            return Response(
+                {'error': f'Invalid document_type. Must be one of {valid_types}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        existing_doc = VehicleDocument.objects.filter(vehicle=vehicle, document_type=document_type).first()
+        if existing_doc:
+            if existing_doc.file:
+                existing_doc.file.delete(save=False)
+            existing_doc.delete()
+
+        doc = VehicleDocument.objects.create(
+            vehicle=vehicle,
+            document_type=document_type,
+            file=uploaded_file
+        )
+
+        serializer = VehicleDocumentSerializer(doc)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class VehicleDocumentDeleteView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def delete(self, request, pk):
+        try:
+            doc = VehicleDocument.objects.get(pk=pk)
+        except VehicleDocument.DoesNotExist:
+            return Response(
+                {'error': 'Document not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if doc.file:
+            doc.file.delete(save=False)
+        doc.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
