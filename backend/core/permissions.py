@@ -51,3 +51,9 @@ class TripsPermission(BasePermission):
 class FuelExpensesPermission(BasePermission):
     def has_permission(self, request, view):
         return check_db_permission(request.user, 'fuel', request.method)
+
+
+class AnalyticsPermission(BasePermission):
+    def has_permission(self, request, view):
+        return check_db_permission(request.user, 'analytics', request.method)
+

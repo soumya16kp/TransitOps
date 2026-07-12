@@ -78,7 +78,7 @@ def ensure_trips_seeded():
         d2 = Driver.objects.filter(license_number="DL-67890").first() or Driver.objects.first()
         d3 = Driver.objects.filter(license_number="DL-11223").first() or Driver.objects.first()
 
-    if Trip.objects.count() == 0 and v1 and v2 and d1 and d2:
+    if Trip.objects.count() == 0 and v1 and v2 and v3 and d1 and d2 and d3:
         # Create a dispatched trip
         Trip.objects.create(
             source="Mumbai",
@@ -100,6 +100,17 @@ def ensure_trips_seeded():
             planned_distance=270,
             status="DRAFT",
             tracking_number="TR002"
+        )
+        # Create a completed trip
+        Trip.objects.create(
+            source="Delhi",
+            destination="Agra",
+            vehicle=v3,
+            driver=d3,
+            cargo_weight=1200,
+            planned_distance=230,
+            status="COMPLETED",
+            tracking_number="TR003"
         )
 
 class TripViewSet(viewsets.ModelViewSet):

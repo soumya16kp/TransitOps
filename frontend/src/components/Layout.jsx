@@ -1,11 +1,11 @@
 import React from 'react';
-import { Outlet, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRBAC } from '../context/RBACContext';
 import '../styles/dashboard.css';
 
 const Layout = () => {
-    const { user, role, roleDisplay, logout } = useAuth();
+    const { user, roleDisplay, logout } = useAuth();
     const { canAccess } = useRBAC();
     const navigate = useNavigate();
     const location = useLocation();
@@ -22,43 +22,18 @@ const Layout = () => {
     if (location.pathname === '/registry') {
         title = "Fleet Registry";
         subtitle = "Manage and track company fleet details";
-    } else if (location.pathname === '/drivers') {
-        title = "Drivers";
-        subtitle = "Manage driver profiles and compliance";
     } else if (location.pathname === '/maintenance') {
         title = "Maintenance";
         subtitle = "Log, track, and resolve vehicle servicing records";
     } else if (location.pathname === '/fuel-expenses') {
         title = "Fuel & Expense Management";
         subtitle = "Track fleet fuel consumption and operational expenditures";
-    } else if (location.pathname === '/dispatcher') {
-        title = "Trip Dispatcher";
-        subtitle = "Create, dispatch, and track live trips";
-    } else if (location.pathname === '/settings') {
-        title = "Settings & RBAC";
-        subtitle = "Configure system roles and module access control rules";
     } else if (location.pathname === '/documents') {
         title = "Roadside Documents";
         subtitle = "Manage critical legal vehicle documents for roadside checks";
-    }
-
-    // Guard: redirect to /dashboard if user tries to access a restricted page directly
-    const routeModuleMap = {
-        '/registry':      'fleet',
-        '/maintenance':   'fleet',
-        '/drivers':       'driver',
-        '/dispatcher':    'trips',
-        '/fuel-expenses': 'fuel',
-    };
-    
-    const currentModule = routeModuleMap[location.pathname];
-    if (currentModule && !canAccess(currentModule)) {
-        return <Navigate to="/dashboard" replace />;
-    }
-
-    // Settings is admin-only guard
-    if (location.pathname === '/settings' && role !== 'admin') {
-        return <Navigate to="/dashboard" replace />;
+    } else if (location.pathname === '/analytics') {
+        title = "Reports & Analytics";
+        subtitle = "Performance metrics, revenue, and fleet operational costs";
     }
 
     return (
@@ -71,67 +46,46 @@ const Layout = () => {
                         <span>TransitOps</span>
                     </div>
                     <nav className="sidebar-nav">
-                        {/* Dashboard (Always visible) */}
                         <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-th-large"></i>
                             <span>Dashboard</span>
                         </NavLink>
-
-                        {/* Fleet – governed by 'fleet' permission */}
-                        {canAccess('fleet') && (
-                            <NavLink to="/registry" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-truck"></i>
-                                <span>Fleet</span>
-                            </NavLink>
-                        )}
-
-                        {/* Drivers – governed by 'driver' permission */}
-                        {canAccess('driver') && (
-                            <NavLink to="/drivers" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-id-card"></i>
-                                <span>Drivers</span>
-                            </NavLink>
-                        )}
-
-                        {/* Trips – governed by 'trips' permission */}
-                        {canAccess('trips') && (
-                            <NavLink to="/dispatcher" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-route"></i>
-                                <span>Trips</span>
-                            </NavLink>
-                        )}
-
-                        {/* Maintenance – governed by 'fleet' permission */}
-                        {canAccess('fleet') && (
-                            <NavLink to="/maintenance" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-tools"></i>
-                                <span>Maintenance</span>
-                            </NavLink>
-                        )}
-
-                        {/* Fuel & Expenses – governed by 'fuel' permission */}
-                        {canAccess('fuel') && (
-                            <NavLink to="/fuel-expenses" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-gas-pump"></i>
-                                <span>Fuel & Expenses</span>
-                            </NavLink>
-                        )}
-
-                        {/* Roadside Documents – Admin only */}
-                        {role === 'admin' && (
+                        <NavLink to="/registry" className={({ isActive }) => isActive ? "active" : ""}>
+                            <i className="fas fa-truck"></i>
+                            <span>Fleet</span>
+                        </NavLink>
+                        <a href="#drivers" onClick={(e) => e.preventDefault()}>
+                            <i className="fas fa-id-card"></i>
+                            <span>Drivers</span>
+                        </a>
+                        <a href="#trips" onClick={(e) => e.preventDefault()}>
+                            <i className="fas fa-route"></i>
+                            <span>Trips</span>
+                        </a>
+                        <NavLink to="/maintenance" className={({ isActive }) => isActive ? "active" : ""}>
+                            <i className="fas fa-tools"></i>
+                            <span>Maintenance</span>
+                        </NavLink>
+                        <NavLink to="/fuel-expenses" className={({ isActive }) => isActive ? "active" : ""}>
+                            <i className="fas fa-gas-pump"></i>
+                            <span>Fuel & Expenses</span>
+                        </NavLink>
+                        {user?.role === 'admin' && (
                             <NavLink to="/documents" className={({ isActive }) => isActive ? "active" : ""}>
                                 <i className="fas fa-file-alt"></i>
                                 <span>Documents</span>
                             </NavLink>
                         )}
-
-                        {/* Settings & RBAC – Admin only */}
-                        {role === 'admin' && (
-                            <NavLink to="/settings" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-cog"></i>
-                                <span>Settings</span>
+                        {canAccess('analytics') && (
+                            <NavLink to="/analytics" className={({ isActive }) => isActive ? "active" : ""}>
+                                <i className="fas fa-chart-line"></i>
+                                <span>Analytics</span>
                             </NavLink>
                         )}
+                        <a href="#settings" onClick={(e) => e.preventDefault()}>
+                            <i className="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
                     </nav>
                     <div className="sidebar-footer">
                         <button onClick={handleLogout} className="logout-btn">
