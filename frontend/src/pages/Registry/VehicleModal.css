@@ -1,97 +1,152 @@
 /* =========================================================
-   VehicleModal.css – Add/Edit Vehicle Modal
+   VehicleModal.css – Modern Minimalist Premium Style
    ========================================================= */
 
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(6px);
+    background: rgba(8, 8, 16, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .modal-card {
-    background: #1a1a2e;
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(26, 26, 46, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     width: 100%;
-    max-width: 540px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
-    animation: slideUp 0.25s ease;
+    max-width: 580px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7),
+                0 0 100px rgba(245, 166, 35, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    overflow: hidden;
 }
 
-@keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+    from {
+        transform: translateY(20px) scale(0.98);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 
 .modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .modal-header h3 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #e8eaf0;
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary, #e8eaf0);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
+    letter-spacing: -0.2px;
 }
 
 .modal-header h3 i {
-    color: #f5a623;
+    color: var(--accent, #f5a623);
+    font-size: 1rem;
+    opacity: 0.9;
 }
 
 .modal-close {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
+    background: transparent;
+    border: none;
     width: 32px;
     height: 32px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #7b8299;
+    color: var(--text-muted, #7b8299);
     cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-close:hover {
-    background: rgba(231,76,60,0.15);
-    border-color: #e74c3c;
-    color: #e74c3c;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary, #e8eaf0);
+    transform: rotate(90deg);
 }
 
 .modal-body {
-    padding: 1.5rem;
+    padding: 2rem;
+    overflow-y: auto;
+    /* Custom Scrollbar for modern look */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-error {
+    background: rgba(231, 76, 60, 0.08);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    color: #ff5252;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    line-height: 1.4;
+}
+
+.modal-error i {
+    margin-top: 0.1rem;
+    font-size: 0.95rem;
 }
 
 .modal-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
 }
 
 .modal-field {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.5rem;
 }
 
 .modal-field.full-width {
@@ -99,109 +154,123 @@
 }
 
 .modal-field label {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    color: #a0a8bf;
-    letter-spacing: 0.3px;
+    color: var(--text-muted, #7b8299);
     text-transform: uppercase;
+    letter-spacing: 0.8px;
 }
 
 .modal-field input,
 .modal-field select,
 .modal-field textarea {
-    background: rgba(255,255,255,0.05);
-    border: 1.5px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 0.65rem 0.9rem;
-    color: #e8eaf0;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary, #e8eaf0);
     font-size: 0.9rem;
     font-family: 'Inter', sans-serif;
     outline: none;
-    transition: border 0.2s, background 0.2s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     width: 100%;
     box-sizing: border-box;
+}
+
+.modal-field input::placeholder,
+.modal-field textarea::placeholder {
+    color: rgba(255, 255, 255, 0.25);
 }
 
 .modal-field input:focus,
 .modal-field select:focus,
 .modal-field textarea:focus {
-    border-color: #f5a623;
-    background: rgba(255,255,255,0.07);
+    border-color: var(--accent, #f5a623);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px var(--accent-glow, rgba(245, 166, 35, 0.15));
 }
 
 .modal-field select option {
-    background: #1a1a2e;
-    color: #e8eaf0;
+    background: #16213e;
+    color: var(--text-primary, #e8eaf0);
 }
 
 .modal-field textarea {
     resize: vertical;
-    min-height: 72px;
-}
-
-.modal-error {
-    background: rgba(231,76,60,0.12);
-    border: 1px solid rgba(231,76,60,0.3);
-    border-radius: 8px;
-    padding: 0.65rem 1rem;
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    min-height: 80px;
 }
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .btn-cancel {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    padding: 0.6rem 1.3rem;
-    color: #a0a8bf;
-    font-size: 0.9rem;
+    padding: 0.7rem 1.5rem;
+    color: var(--text-muted, #7b8299);
+    font-size: 0.88rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-cancel:hover {
-    background: rgba(255,255,255,0.1);
-    color: #e8eaf0;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary, #e8eaf0);
 }
 
 .btn-save {
-    background: #f5a623;
+    background: var(--accent, #f5a623);
     border: none;
     border-radius: 8px;
-    padding: 0.6rem 1.4rem;
-    color: #000;
-    font-size: 0.9rem;
-    font-weight: 700;
+    padding: 0.7rem 1.6rem;
+    color: #0f0f1a;
+    font-size: 0.88rem;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.45rem;
-    transition: background 0.2s, transform 0.15s;
+    gap: 0.5rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.2);
 }
 
 .btn-save:hover:not(:disabled) {
-    background: #e09510;
+    background: var(--accent-hover, #e09510);
+    box-shadow: 0 6px 16px rgba(245, 166, 35, 0.3);
     transform: translateY(-1px);
 }
 
-.btn-save:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+.btn-save:active:not(:disabled) {
+    transform: translateY(0);
 }
 
-@media (max-width: 520px) {
-    .modal-grid { grid-template-columns: 1fr; }
-    .modal-card { margin: 1rem; border-radius: 12px; }
+.btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+@media (max-width: 580px) {
+    .modal-card {
+        margin: 1rem;
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
 }

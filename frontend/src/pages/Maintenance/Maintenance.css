@@ -1,0 +1,363 @@
+/* =========================================================
+   Maintenance.css – Modern Minimalist Premium Style
+   ========================================================= */
+
+.maintenance-container {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-top: 1rem;
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Left Column Panel: Form ────────────────────────────── */
+.maintenance-form-panel {
+    background: rgba(26, 26, 46, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.25rem 1.75rem;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.panel-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 1.75rem;
+    color: var(--text-primary, #e8eaf0);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 0.85rem;
+    margin-top: 0;
+    position: relative;
+}
+
+.panel-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--accent, #f5a623);
+    border-radius: 2px;
+}
+
+.maintenance-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-field label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted, #7b8299);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.form-field select,
+.form-field input {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.8rem 1.1rem;
+    color: var(--text-primary, #e8eaf0);
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-field select:focus,
+.form-field input:focus {
+    border-color: var(--accent, #f5a623);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px var(--accent-glow, rgba(245, 166, 35, 0.15));
+}
+
+.form-field select option {
+    background: #16213e;
+    color: var(--text-primary, #e8eaf0);
+}
+
+.btn-save-record {
+    background: var(--accent, #f5a623);
+    color: #0f0f1a;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 14px rgba(245, 166, 35, 0.2);
+}
+
+.btn-save-record:hover:not(:disabled) {
+    background: var(--accent-hover, #e09510);
+    box-shadow: 0 6px 20px rgba(245, 166, 35, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-save-record:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-save-record:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Rules list at the bottom of form */
+.business-rules {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    font-size: 0.78rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.rule-arrow {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    transition: all 0.2s ease;
+}
+
+.rule-arrow:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.rule-arrow i {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.rule-arrow.shop-active {
+    color: var(--status-in-shop, #e67e22);
+    border-left: 3.5px solid var(--status-in-shop, #e67e22);
+}
+
+.rule-arrow.shop-avail {
+    color: var(--status-available, #27ae60);
+    border-left: 3.5px solid var(--status-available, #27ae60);
+}
+
+.rules-note {
+    margin-top: 0.25rem;
+    font-size: 0.72rem;
+    color: var(--text-muted, #7b8299);
+    line-height: 1.4;
+}
+
+/* ── Right Column Panel: Logs Table ─────────────────────── */
+.maintenance-logs-panel {
+    background: rgba(26, 26, 46, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.25rem;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.maintenance-table-wrapper {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+}
+
+.maintenance-table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.maintenance-table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
+.maintenance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    text-align: left;
+}
+
+.maintenance-table thead tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.maintenance-table th {
+    padding: 1.1rem 1rem;
+    color: var(--text-muted, #7b8299);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.maintenance-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.maintenance-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.025);
+    transform: translateY(-0.5px);
+}
+
+.maintenance-table td {
+    padding: 1.1rem 1rem;
+    color: var(--text-primary, #e8eaf0);
+    vertical-align: middle;
+}
+
+/* Specific Badges */
+.badge-inshop {
+    background: rgba(230, 126, 34, 0.08);
+    color: #ff9f43;
+    border: 1px solid rgba(230, 126, 34, 0.25);
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    display: inline-block;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.badge-completed {
+    background: rgba(39, 174, 96, 0.08);
+    color: #1dd1a1;
+    border: 1px solid rgba(39, 174, 96, 0.25);
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    display: inline-block;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+/* Action controls */
+.action-cell {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-complete-task {
+    background: rgba(39, 174, 96, 0.05);
+    border: 1px solid rgba(39, 174, 96, 0.25);
+    color: #1dd1a1;
+    border-radius: 6px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-complete-task:hover {
+    background: #1dd1a1;
+    border-color: #1dd1a1;
+    color: #0f0f1a;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(29, 209, 161, 0.25);
+}
+
+.btn-delete-record {
+    background: rgba(231, 76, 60, 0.05);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    color: #ff6b6b;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 0.85rem;
+}
+
+.btn-delete-record:hover {
+    background: #ff6b6b;
+    color: #0f0f1a;
+    border-color: #ff6b6b;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.25);
+}
+
+/* ── Empty & Loading ───────────────────────────────────── */
+.logs-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--text-muted, #7b8299);
+    padding: 4rem;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.logs-empty {
+    color: var(--text-muted, #7b8299);
+    padding: 5rem 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.logs-error {
+    background: rgba(231, 76, 60, 0.08);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    border-radius: 8px;
+    padding: 0.8rem 1.1rem;
+    color: #ff5252;
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+    .maintenance-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}

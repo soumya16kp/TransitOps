@@ -1,0 +1,326 @@
+.expenses-action-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+}
+
+.expenses-tables-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 16px;
+}
+
+.expense-section-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.section-title-label {
+    color: #f59e0b; /* Amber orange label */
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.expenses-table-container {
+    overflow-x: auto;
+}
+
+.expenses-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.expenses-table th {
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    letter-spacing: 0.5px;
+}
+
+.expenses-table td {
+    padding: 16px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.expenses-table tr:last-child td {
+    border-bottom: none;
+}
+
+.expenses-table .bold-text {
+    color: white;
+    font-weight: 600;
+}
+
+.expenses-table .amber-text {
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+.expenses-table .empty-row {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    padding: 32px;
+    font-style: italic;
+}
+
+/* Status Badges */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: capitalize;
+    min-width: 100px;
+}
+
+.status-pill.available {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-pill.completed {
+    background: rgba(101, 163, 13, 0.2);
+    color: #a3e635;
+    border: 1px solid rgba(101, 163, 13, 0.3);
+}
+
+/* Button styles */
+.expense-button-group {
+    display: flex;
+    gap: 16px;
+}
+
+.expense-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.expense-btn.log-fuel {
+    background: #d97706;
+    color: white;
+    border: 1px solid rgba(217, 119, 6, 0.4);
+}
+
+.expense-btn.log-fuel:hover {
+    background: #b45309;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+}
+
+.expense-btn.add-expense {
+    background: #b45309;
+    color: white;
+    border: 1px solid rgba(180, 83, 9, 0.4);
+}
+
+.expense-btn.add-expense:hover {
+    background: #92400e;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(180, 83, 9, 0.3);
+}
+
+/* Operational Cost Summary Banner */
+.expense-summary-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(245, 158, 11, 0.05);
+    border: 1px dashed rgba(245, 158, 11, 0.25);
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin-top: 16px;
+}
+
+.summary-formula {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.summary-total-cost {
+    color: #fbbf24;
+    font-size: 32px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Modals Overlay & Body */
+.expense-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.expense-modal {
+    background: #0f0f23;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    animation: modal-enter 0.3s ease;
+}
+
+@keyframes modal-enter {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.modal-header h3 {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 28px;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: white;
+}
+
+.expense-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.expense-form-group label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.expense-form-group input,
+.expense-form-group select {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.expense-form-group input:focus,
+.expense-form-group select:focus {
+    outline: none;
+    border-color: #f59e0b;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.modal-actions button {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.submit-btn.orange-btn {
+    background: #d97706;
+    color: white;
+    border: none;
+}
+
+.submit-btn.orange-btn:hover {
+    background: #b45309;
+    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .expense-summary-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+    
+    .summary-total-cost {
+        font-size: 28px;
+    }
+
+    .expense-button-group {
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    .expense-btn {
+        flex: 1;
+        justify-content: center;
+    }
+}

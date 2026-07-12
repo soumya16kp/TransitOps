@@ -23,12 +23,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     
     # Local apps
     'auth_app',
     'core',
     'vehicle_app',
     'driver_app',
+    'maintenance_app',
+    'expenses',
 ]
 
 MIDDLEWARE = [

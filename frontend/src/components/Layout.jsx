@@ -18,11 +18,17 @@ const Layout = () => {
     let subtitle = `Welcome back, ${user?.username || ''}!`;
 
     if (location.pathname === '/registry') {
-        title = "Vehicle Registry";
+        title = "Fleet Registry";
         subtitle = "Manage and track company fleet details";
     } else if (location.pathname === '/drivers') {
         title = "Drivers";
         subtitle = "Manage driver profiles and compliance";
+    } else if (location.pathname === '/maintenance') {
+        title = "Maintenance";
+        subtitle = "Log, track, and resolve vehicle servicing records";
+    } else if (location.pathname === '/fuel-expenses') {
+        title = "Fuel & Expense Management";
+        subtitle = "Track fleet fuel consumption and operational expenditures";
     }
 
     return (
@@ -31,7 +37,7 @@ const Layout = () => {
                 {/* Unified Sidebar */}
                 <aside className="sidebar">
                     <div className="sidebar-brand">
-                        <i className="fas fa-cube"></i>
+                        <i className="fas fa-bus-alt" style={{ color: '#f5a623', fontSize: '24px' }}></i>
                         <span>TransitOps</span>
                     </div>
                     <nav className="sidebar-nav">
@@ -40,22 +46,34 @@ const Layout = () => {
                             <span>Dashboard</span>
                         </NavLink>
                         <NavLink to="/registry" className={({ isActive }) => isActive ? "active" : ""}>
-                            <i className="fas fa-bus-alt"></i>
-                            <span>Vehicle Registry</span>
+                            <i className="fas fa-truck"></i>
+                            <span>Fleet</span>
                         </NavLink>
                         <NavLink to="/drivers" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-id-card"></i>
                             <span>Drivers</span>
                         </NavLink>
-                        <a href="#tasks">
+                        <a href="#tasks" onClick={(e) => e.preventDefault()}>
                             <i className="fas fa-tasks"></i>
                             <span>Tasks</span>
                         </a>
-                        <a href="#team">
-                            <i className="fas fa-users"></i>
-                            <span>Team</span>
+                        <a href="#trips" onClick={(e) => e.preventDefault()}>
+                            <i className="fas fa-route"></i>
+                            <span>Trips</span>
                         </a>
-                        <a href="#settings">
+                        <NavLink to="/maintenance" className={({ isActive }) => isActive ? "active" : ""}>
+                            <i className="fas fa-tools"></i>
+                            <span>Maintenance</span>
+                        </NavLink>
+                        <NavLink to="/fuel-expenses" className={({ isActive }) => isActive ? "active" : ""}>
+                            <i className="fas fa-gas-pump"></i>
+                            <span>Fuel & Expenses</span>
+                        </NavLink>
+                        <a href="#analytics" onClick={(e) => e.preventDefault()}>
+                            <i className="fas fa-chart-line"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="#settings" onClick={(e) => e.preventDefault()}>
                             <i className="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
