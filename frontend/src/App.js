@@ -36,3 +36,5 @@ function App() {
 }
 
 export default App;
+
+// Test comment to verify commit contributor name and email settings.
