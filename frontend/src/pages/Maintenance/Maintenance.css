@@ -1,0 +1,278 @@
+/* =========================================================
+   Maintenance.css – Split layout page style (Excalidraw design)
+   ========================================================= */
+
+.maintenance-container {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-top: 1rem;
+}
+
+/* ── Left Column Panel: Form ────────────────────────────── */
+.maintenance-form-panel {
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.panel-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 1.25rem;
+    color: #e8eaf0;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.5rem;
+}
+
+.maintenance-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #a0a8bf;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-field select,
+.form-field input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    color: #e8eaf0;
+    font-size: 0.88rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-field select:focus,
+.form-field input:focus {
+    border-color: #f5a623;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.form-field select option {
+    background: #1a1a2e;
+    color: #e8eaf0;
+}
+
+.btn-save-record {
+    background: #f5a623;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-save-record:hover {
+    background: #e09510;
+    transform: translateY(-1px);
+}
+
+.btn-save-record:active {
+    transform: translateY(0);
+}
+
+/* Rules list at the bottom of form */
+.business-rules {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    font-size: 0.76rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    color: #a0a8bf;
+}
+
+.rule-arrow {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.rule-arrow.shop-active { color: #f39c12; }
+.rule-arrow.shop-avail  { color: #2ecc71; }
+
+.rules-note {
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    color: #7b8299;
+    line-height: 1.3;
+}
+
+/* ── Right Column Panel: Logs Table ─────────────────────── */
+.maintenance-logs-panel {
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.maintenance-table-wrapper {
+    overflow-x: auto;
+}
+
+.maintenance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    text-align: left;
+}
+
+.maintenance-table thead tr {
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.maintenance-table th {
+    padding: 0.85rem 1rem;
+    color: #7b8299;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.maintenance-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.15s ease;
+}
+
+.maintenance-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.maintenance-table td {
+    padding: 0.85rem 1rem;
+    color: #e8eaf0;
+    vertical-align: middle;
+}
+
+/* Specific Badges */
+.badge-inshop {
+    background: rgba(230, 126, 34, 0.15);
+    color: #f39c12;
+    border: 1px solid #e67e22;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-completed {
+    background: rgba(39, 174, 96, 0.15);
+    color: #2ecc71;
+    border: 1px solid #27ae60;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Action controls */
+.action-cell {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.btn-complete-task {
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid #2ecc71;
+    color: #2ecc71;
+    border-radius: 6px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-complete-task:hover {
+    background: #2ecc71;
+    color: #000;
+}
+
+.btn-delete-record {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete-record:hover {
+    background: #e74c3c;
+    color: #fff;
+    border-color: #e74c3c;
+}
+
+/* ── Empty & Loading ───────────────────────────────────── */
+.logs-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #7b8299;
+    padding: 2rem;
+}
+
+.logs-empty {
+    color: #7b8299;
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.logs-error {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .maintenance-container {
+        grid-template-columns: 1fr;
+    }
+}
