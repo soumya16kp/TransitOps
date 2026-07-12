@@ -13,6 +13,7 @@ import Maintenance from './pages/Maintenance/Maintenance';
 import FuelExpenses from './pages/fuel/FuelExpenses';
 import TripDispatcher from './pages/trips/TripDispatcher';
 import Settings from './pages/settings/Settings';
+import Tasks from './pages/Tasks/Tasks';
 
 function App() {
     return (
@@ -35,6 +36,7 @@ function App() {
                                 <Route path="/fuel-expenses" element={<FuelExpenses />} />
                                 <Route path="/dispatcher"    element={<TripDispatcher />} />
                                 <Route path="/settings"      element={<Settings />} />
+                                <Route path="/tasks"         element={<Tasks />} />
                             </Route>
                         </Route>
                     </Routes>

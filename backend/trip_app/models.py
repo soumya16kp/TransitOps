@@ -29,6 +29,12 @@ class Trip(models.Model):
     
     cargo_weight = models.PositiveIntegerField(help_text="Cargo weight in kg.")
     planned_distance = models.PositiveIntegerField(help_text="Planned distance in km.")
+    revenue = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=0.00,
+        help_text="Expected revenue from this trip in INR (₹)."
+    )
     
     status = models.CharField(
         max_length=15,

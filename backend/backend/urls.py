@@ -6,6 +6,7 @@ urlpatterns = [
     path('api/auth/', include('auth_app.urls')),
     path('api/core/', include('core.urls')),
     path('api/', include('trip_app.urls')), 
+    path('api/', include('task_app.urls')),
     path('api/vehicles/', include('vehicle_app.urls')),
     path('api/drivers/', include('driver_app.urls')),
     path('api/maintenance/', include('maintenance_app.urls')),

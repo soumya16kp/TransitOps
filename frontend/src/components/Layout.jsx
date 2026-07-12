@@ -34,6 +34,9 @@ const Layout = () => {
     } else if (location.pathname === '/dispatcher') {
         title = "Trip Dispatcher";
         subtitle = "Create, dispatch, and track live trips";
+    } else if (location.pathname === '/tasks') {
+        title = "Execution Board";
+        subtitle = "Real-time Kanban view of all trip lifecycle phases";
     } else if (location.pathname === '/settings') {
         title = "Settings & RBAC";
         subtitle = "Configure depot details and view role mappings";
@@ -45,6 +48,7 @@ const Layout = () => {
         '/maintenance':   'fleet',
         '/drivers':       'driver',
         '/dispatcher':    'trips',
+        '/tasks':         'trips',
         '/fuel-expenses': 'fuel',
     };
     const currentModule = routeModuleMap[location.pathname];
@@ -81,6 +85,14 @@ const Layout = () => {
                             <NavLink to="/drivers" className={({ isActive }) => isActive ? "active" : ""}>
                                 <i className="fas fa-id-card"></i>
                                 <span>Drivers</span>
+                            </NavLink>
+                        )}
+
+                        {/* Tasks – canAccess('trips') */}
+                        {canAccess('trips') && (
+                            <NavLink to="/tasks" className={({ isActive }) => isActive ? "active" : ""}>
+                                <i className="fas fa-tasks"></i>
+                                <span>Tasks</span>
                             </NavLink>
                         )}
 
