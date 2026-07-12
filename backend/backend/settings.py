@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     # Local apps
     'auth_app',
     'core',
+    'vehicle_app',
 ]
 
 MIDDLEWARE = [

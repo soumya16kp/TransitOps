@@ -1,38 +1,36 @@
-// src/components/Login.js
+// src/components/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/login.css';
 
 const Login = () => {
-    const [credentials, setCredentials] = useState({
-        email: '',
-        password: ''
-    });
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const [error, setError]           = useState('');
+    const [loading, setLoading]       = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const { login } = useAuth();
-    const navigate = useNavigate();
+    const navigate  = useNavigate();
 
     const handleChange = (e) => {
-        setCredentials({
-            ...credentials,
-            [e.target.name]: e.target.value
-        });
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
-
         try {
             await login(credentials);
             navigate('/dashboard');
-        } catch (error) {
-            setError(typeof error === 'string' ? error : 'Invalid email or password');
+        } catch (err) {
+            if (err && typeof err === 'object') {
+                const msgs = Object.values(err).flat().join(' | ');
+                setError(msgs || 'Invalid email or password');
+            } else {
+                setError(typeof err === 'string' ? err : 'Invalid email or password');
+            }
         } finally {
             setLoading(false);
         }
@@ -48,10 +46,10 @@ const Login = () => {
 
                     <div className="login-header">
                         <div className="brand-icon">
-                            <i className="fas fa-arrow-right-to-bracket"></i>
+                            <i className="fas fa-bus-alt"></i>
                         </div>
                         <h2>Welcome Back</h2>
-                        <p>Sign in to access your account</p>
+                        <p>Sign in to TransitOps</p>
                     </div>
 
                     {error && (
@@ -87,7 +85,7 @@ const Login = () => {
                             </label>
                             <div className="input-wrapper password-wrapper">
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword ? 'text' : 'password'}
                                     name="password"
                                     placeholder="Enter your password"
                                     value={credentials.password}
@@ -106,8 +104,8 @@ const Login = () => {
 
                         <div className="form-options">
                             <label className="checkbox-label">
-                                <input 
-                                    type="checkbox" 
+                                <input
+                                    type="checkbox"
                                     checked={rememberMe}
                                     onChange={() => setRememberMe(!rememberMe)}
                                 />
@@ -132,21 +130,6 @@ const Login = () => {
                                 </>
                             )}
                         </button>
-
-                        <div className="divider">
-                            <span>or continue with</span>
-                        </div>
-
-                        <div className="social-login">
-                            <button type="button" className="btn btn-social google">
-                                <i className="fab fa-google"></i>
-                                Google
-                            </button>
-                            <button type="button" className="btn btn-social github">
-                                <i className="fab fa-github"></i>
-                                GitHub
-                            </button>
-                        </div>
                     </form>
 
                     <div className="login-footer">

@@ -4,6 +4,8 @@ import authService from '../services/AuthService';
 // Initial state
 const initialState = {
     user: null,
+    role: null,
+    roleDisplay: null,
     isAuthenticated: false,
     loading: true,
     error: null
@@ -11,13 +13,13 @@ const initialState = {
 
 // Action types
 const ACTION_TYPES = {
-    LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-    LOGIN_FAILURE: 'LOGIN_FAILURE',
-    LOGOUT: 'LOGOUT',
+    LOGIN_SUCCESS:    'LOGIN_SUCCESS',
+    LOGIN_FAILURE:    'LOGIN_FAILURE',
+    LOGOUT:           'LOGOUT',
     REGISTER_SUCCESS: 'REGISTER_SUCCESS',
     REGISTER_FAILURE: 'REGISTER_FAILURE',
-    UPDATE_USER: 'UPDATE_USER',
-    SET_LOADING: 'SET_LOADING'
+    UPDATE_USER:      'UPDATE_USER',
+    SET_LOADING:      'SET_LOADING'
 };
 
 // Reducer
@@ -27,38 +29,43 @@ const authReducer = (state, action) => {
         case ACTION_TYPES.REGISTER_SUCCESS:
             return {
                 ...state,
-                user: action.payload.user,
+                user:            action.payload.user,
+                role:            action.payload.user?.role         || null,
+                roleDisplay:     action.payload.user?.role_display  || null,
                 isAuthenticated: true,
-                loading: false,
-                error: null
+                loading:         false,
+                error:           null
             };
         case ACTION_TYPES.LOGIN_FAILURE:
         case ACTION_TYPES.REGISTER_FAILURE:
             return {
                 ...state,
-                user: null,
+                user:            null,
+                role:            null,
+                roleDisplay:     null,
                 isAuthenticated: false,
-                loading: false,
-                error: action.payload
+                loading:         false,
+                error:           action.payload
             };
         case ACTION_TYPES.LOGOUT:
             return {
                 ...state,
-                user: null,
+                user:            null,
+                role:            null,
+                roleDisplay:     null,
                 isAuthenticated: false,
-                loading: false,
-                error: null
+                loading:         false,
+                error:           null
             };
         case ACTION_TYPES.UPDATE_USER:
             return {
                 ...state,
-                user: action.payload
+                user:        action.payload,
+                role:        action.payload?.role         || state.role,
+                roleDisplay: action.payload?.role_display  || state.roleDisplay,
             };
         case ACTION_TYPES.SET_LOADING:
-            return {
-                ...state,
-                loading: action.payload
-            };
+            return { ...state, loading: action.payload };
         default:
             return state;
     }
@@ -72,10 +79,7 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
     useEffect(() => {
-        const handleAuthLogout = () => {
-            dispatch({ type: ACTION_TYPES.LOGOUT });
-        };
-
+        const handleAuthLogout = () => dispatch({ type: ACTION_TYPES.LOGOUT });
         window.addEventListener('auth:logout', handleAuthLogout);
         return () => window.removeEventListener('auth:logout', handleAuthLogout);
     }, []);
@@ -88,11 +92,10 @@ export const AuthProvider = ({ children }) => {
                     const userData = await authService.getProfile();
                     localStorage.setItem('user_data', JSON.stringify(userData));
                     dispatch({
-                        type: ACTION_TYPES.LOGIN_SUCCESS,
+                        type:    ACTION_TYPES.LOGIN_SUCCESS,
                         payload: { user: userData }
                     });
                 } catch (error) {
-                    // Token expired or invalid
                     localStorage.removeItem('access_token');
                     localStorage.removeItem('refresh_token');
                     localStorage.removeItem('user_data');
@@ -103,55 +106,39 @@ export const AuthProvider = ({ children }) => {
                 dispatch({ type: ACTION_TYPES.LOGOUT });
             }
         };
-
         checkAuth();
     }, []);
 
-    // Auth actions
+    // ── Auth actions ──────────────────────────────────────────────────────────
+
     const login = async (credentials) => {
         try {
-            dispatch({ 
-                type: ACTION_TYPES.SET_LOADING, 
-                payload: true 
-            });
-            
+            dispatch({ type: ACTION_TYPES.SET_LOADING, payload: true });
             const data = await authService.login(credentials);
             localStorage.setItem('user_data', JSON.stringify(data.user));
-            
             dispatch({
-                type: ACTION_TYPES.LOGIN_SUCCESS,
+                type:    ACTION_TYPES.LOGIN_SUCCESS,
                 payload: { user: data.user }
             });
             return data;
         } catch (error) {
-            dispatch({
-                type: ACTION_TYPES.LOGIN_FAILURE,
-                payload: error
-            });
+            dispatch({ type: ACTION_TYPES.LOGIN_FAILURE, payload: error });
             throw error;
         }
     };
 
     const register = async (userData) => {
         try {
-            dispatch({ 
-                type: ACTION_TYPES.SET_LOADING, 
-                payload: true 
-            });
-            
+            dispatch({ type: ACTION_TYPES.SET_LOADING, payload: true });
             const data = await authService.register(userData);
             localStorage.setItem('user_data', JSON.stringify(data.user));
-            
             dispatch({
-                type: ACTION_TYPES.REGISTER_SUCCESS,
+                type:    ACTION_TYPES.REGISTER_SUCCESS,
                 payload: { user: data.user }
             });
             return data;
         } catch (error) {
-            dispatch({
-                type: ACTION_TYPES.REGISTER_FAILURE,
-                payload: error
-            });
+            dispatch({ type: ACTION_TYPES.REGISTER_FAILURE, payload: error });
             throw error;
         }
     };
@@ -159,9 +146,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             const refreshToken = localStorage.getItem('refresh_token');
-            if (refreshToken) {
-                await authService.logout(refreshToken);
-            }
+            if (refreshToken) await authService.logout(refreshToken);
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
@@ -171,11 +156,16 @@ export const AuthProvider = ({ children }) => {
     };
 
     const updateUser = (userData) => {
-        dispatch({
-            type: ACTION_TYPES.UPDATE_USER,
-            payload: userData
-        });
+        dispatch({ type: ACTION_TYPES.UPDATE_USER, payload: userData });
         localStorage.setItem('user_data', JSON.stringify(userData));
+    };
+
+    /**
+     * hasRole(['fleet_manager', 'admin']) → true if user has any listed role.
+     */
+    const hasRole = (roles = []) => {
+        if (!state.role) return false;
+        return roles.includes(state.role);
     };
 
     const value = {
@@ -183,7 +173,8 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
-        updateUser
+        updateUser,
+        hasRole,
     };
 
     return (
