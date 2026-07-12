@@ -1,10 +1,12 @@
 import React from 'react';
-import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useRBAC } from '../context/RBACContext';
 import '../styles/dashboard.css';
 
 const Layout = () => {
-    const { user, roleDisplay, logout } = useAuth();
+    const { user, role, roleDisplay, logout } = useAuth();
+    const { canAccess } = useRBAC();
     const navigate = useNavigate();
     const location = useLocation();
 
