@@ -30,8 +30,11 @@ INSTALLED_APPS = [
     'core',
     'vehicle_app',
     'driver_app',
+<<<<<<< HEAD
     'maintenance_app',
     'expenses',
+=======
+>>>>>>> 314f758dc6c55a198e2463701587c02327a369fe
 ]
 
 MIDDLEWARE = [
