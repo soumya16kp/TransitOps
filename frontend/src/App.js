@@ -26,7 +26,7 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/" element={<Navigate to="/dashboard" />} />
 
-                        {/* Protected routes wrapped in Layout */}
+                        {/* Protected routes wrapped in Layout and RBACProvider */}
                         <Route element={<ProtectedRoute />}>
                             <Route element={<RBACProvider><Layout /></RBACProvider>}>
                                 <Route path="/dashboard" element={<Dashboard />} />
@@ -38,12 +38,12 @@ function App() {
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/tasks" element={<Tasks />} />
                                 <Route path="/documents" element={<Documents />} />
-                            </Route >
-                        </Route >
-                    </Routes >
-                </div >
-            </Router >
-        </AuthProvider >
+                            </Route>
+                        </Route>
+                    </Routes>
+                </div>
+            </Router>
+        </AuthProvider>
     );
 }
 
