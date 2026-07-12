@@ -23,6 +23,9 @@ const Layout = () => {
     } else if (location.pathname === '/maintenance') {
         title = "Maintenance";
         subtitle = "Log, track, and resolve vehicle servicing records";
+    } else if (location.pathname === '/fuel-expenses') {
+        title = "Fuel & Expense Management";
+        subtitle = "Track fleet fuel consumption and operational expenditures";
     }
 
     return (
@@ -43,11 +46,11 @@ const Layout = () => {
                             <i className="fas fa-truck"></i>
                             <span>Fleet</span>
                         </NavLink>
-                        <a href="#drivers">
+                        <a href="#drivers" onClick={(e) => e.preventDefault()}>
                             <i className="fas fa-id-card"></i>
                             <span>Drivers</span>
                         </a>
-                        <a href="#trips">
+                        <a href="#trips" onClick={(e) => e.preventDefault()}>
                             <i className="fas fa-route"></i>
                             <span>Trips</span>
                         </a>
@@ -55,15 +58,15 @@ const Layout = () => {
                             <i className="fas fa-tools"></i>
                             <span>Maintenance</span>
                         </NavLink>
-                        <a href="#fuel">
+                        <NavLink to="/fuel-expenses" className={({ isActive }) => isActive ? "active" : ""}>
                             <i className="fas fa-gas-pump"></i>
                             <span>Fuel & Expenses</span>
-                        </a>
-                        <a href="#analytics">
+                        </NavLink>
+                        <a href="#analytics" onClick={(e) => e.preventDefault()}>
                             <i className="fas fa-chart-line"></i>
                             <span>Analytics</span>
                         </a>
-                        <a href="#settings">
+                        <a href="#settings" onClick={(e) => e.preventDefault()}>
                             <i className="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
