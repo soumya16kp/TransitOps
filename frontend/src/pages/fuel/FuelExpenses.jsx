@@ -15,6 +15,9 @@ const FuelExpenses = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Filter search state
+    const [searchQuery, setSearchQuery] = useState('');
+
     // Modal states
     const [showFuelModal, setShowFuelModal] = useState(false);
     const [showExpenseModal, setShowExpenseModal] = useState(false);
@@ -57,7 +60,12 @@ const FuelExpenses = () => {
     };
 
     const sortedFuelLogs = useMemo(() => {
-        let sortableItems = [...fuelLogs];
+        // Filter first
+        const filtered = fuelLogs.filter(log =>
+            (log.vehicle || '').toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        let sortableItems = [...filtered];
         if (fuelSortConfig.key !== null) {
             sortableItems.sort((a, b) => {
                 let aValue, bValue;
@@ -84,10 +92,16 @@ const FuelExpenses = () => {
             });
         }
         return sortableItems;
-    }, [fuelLogs, fuelSortConfig]);
+    }, [fuelLogs, fuelSortConfig, searchQuery]);
 
     const sortedOtherExpenses = useMemo(() => {
-        let sortableItems = [...otherExpenses];
+        // Filter first
+        const filtered = otherExpenses.filter(exp =>
+            (exp.vehicle || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (exp.trip || '').toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        let sortableItems = [...filtered];
         if (expenseSortConfig.key !== null) {
             sortableItems.sort((a, b) => {
                 let aValue, bValue;
@@ -120,7 +134,7 @@ const FuelExpenses = () => {
             });
         }
         return sortableItems;
-    }, [otherExpenses, expenseSortConfig]);
+    }, [otherExpenses, expenseSortConfig, searchQuery]);
 
     const getFuelSortIcon = (key) => {
         if (fuelSortConfig.key !== key) {
@@ -221,6 +235,15 @@ const FuelExpenses = () => {
     return (
         <>
             <div className="expenses-action-bar">
+                <div className="expenses-search-container" style={{ flex: 1, maxWidth: '360px' }}>
+                    <input 
+                        type="text" 
+                        placeholder="Search by vehicle or trip..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="expenses-search-input"
+                    />
+                </div>
                 <div className="expense-button-group">
                     <button onClick={() => setShowFuelModal(true)} className="expense-btn log-fuel">
                         <i className="fas fa-plus"></i> Log Fuel
@@ -269,9 +292,9 @@ const FuelExpenses = () => {
                                             <td className="amber-text">₹{parseFloat(log.fuel_cost).toLocaleString('en-IN')}</td>
                                         </tr>
                                     ))}
-                                    {fuelLogs.length === 0 && (
+                                    {sortedFuelLogs.length === 0 && (
                                         <tr>
-                                            <td colSpan="4" className="empty-row">No fuel logs recorded</td>
+                                            <td colSpan="4" className="empty-row">No matching fuel logs found</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -321,9 +344,9 @@ const FuelExpenses = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    {otherExpenses.length === 0 && (
+                                    {sortedOtherExpenses.length === 0 && (
                                         <tr>
-                                            <td colSpan="6" className="empty-row">No other expenses recorded</td>
+                                            <td colSpan="6" className="empty-row">No matching expenses found</td>
                                         </tr>
                                     )}
                                 </tbody>

@@ -19,6 +19,7 @@ class DriverSerializer(serializers.ModelSerializer):
             'safety_score',
             'status',
             'status_display',
+            'license_file',
             'created_at',
             'updated_at',
         ]

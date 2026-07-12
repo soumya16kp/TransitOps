@@ -148,7 +148,22 @@ const Drivers = () => {
                 return (
                   <tr key={driver.id}>
                     <td>{driver.name}</td>
-                    <td>{driver.license_number}</td>
+                    <td>
+                      <div>{driver.license_number}</div>
+                      {driver.license_file && (
+                        <div style={{ fontSize: '0.72rem', marginTop: '4px' }}>
+                          <a 
+                            href={`http://localhost:8000${driver.license_file}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            style={{ color: '#f5a623', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            <i className="fas fa-file-pdf"></i>
+                            View License
+                          </a>
+                        </div>
+                      )}
+                    </td>
                     <td>{driver.license_category}</td>
                     <td style={{ color: expired ? '#f87171' : 'inherit', fontWeight: expired ? 'bold' : 'normal' }}>
                       {driver.license_expiry_date} {expired && '(EXPIRED)'}

@@ -38,7 +38,18 @@ const driverService = {
      */
     async createDriver(data) {
         try {
-            const response = await axios.post(`${BASE_URL}/`, data);
+            let payload = data;
+            let headers = {};
+            if (data.license_file) {
+                payload = new FormData();
+                Object.keys(data).forEach(key => {
+                    if (data[key] !== null && data[key] !== undefined) {
+                        payload.append(key, data[key]);
+                    }
+                });
+                headers['Content-Type'] = 'multipart/form-data';
+            }
+            const response = await axios.post(`${BASE_URL}/`, payload, { headers });
             return response.data;
         } catch (error) {
             throw error.response?.data || error.message;
@@ -46,11 +57,23 @@ const driverService = {
     },
 
     /**
-     * Full update of a driver.
+     * Full/Partial update of a driver.
+     * Note: We use PATCH here to support multipart/form-data file uploads smoothly in Django.
      */
     async updateDriver(id, data) {
         try {
-            const response = await axios.put(`${BASE_URL}/${id}/`, data);
+            let payload = data;
+            let headers = {};
+            if (data.license_file) {
+                payload = new FormData();
+                Object.keys(data).forEach(key => {
+                    if (data[key] !== null && data[key] !== undefined) {
+                        payload.append(key, data[key]);
+                    }
+                });
+                headers['Content-Type'] = 'multipart/form-data';
+            }
+            const response = await axios.patch(`${BASE_URL}/${id}/`, payload, { headers });
             return response.data;
         } catch (error) {
             throw error.response?.data || error.message;
@@ -62,7 +85,18 @@ const driverService = {
      */
     async patchDriver(id, data) {
         try {
-            const response = await axios.patch(`${BASE_URL}/${id}/`, data);
+            let payload = data;
+            let headers = {};
+            if (data.license_file) {
+                payload = new FormData();
+                Object.keys(data).forEach(key => {
+                    if (data[key] !== null && data[key] !== undefined) {
+                        payload.append(key, data[key]);
+                    }
+                });
+                headers['Content-Type'] = 'multipart/form-data';
+            }
+            const response = await axios.patch(`${BASE_URL}/${id}/`, payload, { headers });
             return response.data;
         } catch (error) {
             throw error.response?.data || error.message;

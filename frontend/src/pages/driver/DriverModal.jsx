@@ -8,6 +8,7 @@ const EMPTY_FORM = {
     contact_number: '',
     safety_score: '100',
     status: 'AVAILABLE',
+    license_file: null
 };
 
 const CATEGORIES = [
@@ -39,6 +40,7 @@ const DriverModal = ({ isOpen, onClose, onSave, driver }) => {
                 contact_number: driver.contact_number || '',
                 safety_score: driver.safety_score ?? '100',
                 status: driver.status || 'AVAILABLE',
+                license_file: null
             });
         } else {
             setForm(EMPTY_FORM);
@@ -55,12 +57,16 @@ const DriverModal = ({ isOpen, onClose, onSave, driver }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        setSaving(false);
+        setSaving(true);
         try {
             const payload = {
                 ...form,
                 safety_score: Number(form.safety_score),
             };
+            // If they didn't pick a new file, delete it from payload so we don't overwrite with null
+            if (!payload.license_file) {
+                delete payload.license_file;
+            }
             await onSave(payload, isEditing ? driver.id : null);
             onClose();
         } catch (err) {
@@ -194,6 +200,25 @@ const DriverModal = ({ isOpen, onClose, onSave, driver }) => {
                                         <option key={st.value} value={st.value}>{st.label}</option>
                                     ))}
                                 </select>
+                            </div>
+
+                            {/* License File Upload */}
+                            <div style={{ gridColumn: 'span 2' }}>
+                                <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.85rem' }}>
+                                    License Document File
+                                    {driver?.license_file && (
+                                        <span style={{ marginLeft: '8px', fontSize: '0.75rem' }}>
+                                            (Current: <a href={`http://localhost:8000${driver.license_file}`} target="_blank" rel="noopener noreferrer" style={{ color: '#f5a623', textDecoration: 'underline' }}>View file</a>)
+                                        </span>
+                                    )}
+                                </label>
+                                <input
+                                    type="file"
+                                    name="license_file"
+                                    onChange={(e) => setForm({ ...form, license_file: e.target.files[0] })}
+                                    accept=".pdf,.png,.jpg,.jpeg"
+                                    style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#e5e7eb' }}
+                                />
                             </div>
                         </div>
                     </form>

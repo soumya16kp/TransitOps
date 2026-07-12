@@ -18,6 +18,7 @@ const Maintenance = () => {
     const [loadingLogs, setLoadingLogs] = useState(true);
     const [error, setError]       = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [searchQuery, setSearchQuery] = useState('');
 
     const requestSort = (key) => {
         let direction = 'asc';
@@ -28,7 +29,12 @@ const Maintenance = () => {
     };
 
     const sortedRecords = useMemo(() => {
-        let sortableItems = [...records];
+        let filtered = records.filter(r => 
+            (r.vehicle_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (r.vehicle_reg_no || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (r.service_type || '').toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        let sortableItems = [...filtered];
         if (sortConfig.key !== null) {
             sortableItems.sort((a, b) => {
                 let aValue, bValue;
@@ -55,7 +61,7 @@ const Maintenance = () => {
             });
         }
         return sortableItems;
-    }, [records, sortConfig]);
+    }, [records, sortConfig, searchQuery]);
 
     const getSortIcon = (key) => {
         if (sortConfig.key !== key) {
@@ -276,7 +282,16 @@ const Maintenance = () => {
 
             {/* Right Column: Logs Table */}
             <div className="maintenance-logs-panel">
-                <h2 className="panel-title">Service Logs</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+                    <h2 className="panel-title" style={{ margin: 0 }}>Service Logs</h2>
+                    <input
+                        type="text"
+                        placeholder="Search logs..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="maintenance-search-input"
+                    />
+                </div>
                 <div className="maintenance-table-wrapper">
                     {loadingLogs ? (
                         <div className="logs-loading">
