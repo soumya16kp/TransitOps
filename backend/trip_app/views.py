@@ -87,6 +87,7 @@ def ensure_trips_seeded():
             driver=d1,
             cargo_weight=500,
             planned_distance=150,
+            revenue=22500.00,
             status="DISPATCHED",
             tracking_number="TR001"
         )
@@ -98,6 +99,7 @@ def ensure_trips_seeded():
             driver=d2,
             cargo_weight=3000,
             planned_distance=270,
+            revenue=40500.00,
             status="DRAFT",
             tracking_number="TR002"
         )
@@ -109,6 +111,7 @@ def ensure_trips_seeded():
             driver=d3,
             cargo_weight=1200,
             planned_distance=230,
+            revenue=34500.00,
             status="COMPLETED",
             tracking_number="TR003"
         )

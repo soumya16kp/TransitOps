@@ -129,15 +129,12 @@ class AnalyticsSummaryView(APIView):
 
         # 7. Total Revenue & Fleet ROI
         total_acquisition = Vehicle.objects.aggregate(Sum('acquisition_cost'))['acquisition_cost__sum'] or 0
-        total_revenue = 0
-        completed_trips = Trip.objects.filter(status='COMPLETED')
-        for t in completed_trips:
-            total_revenue += t.planned_distance * 150 # 150 INR per km of completed cargo trips
+        total_revenue = float(Trip.objects.filter(status='COMPLETED').aggregate(Sum('revenue'))['revenue__sum'] or 0)
 
         # ROI = (Revenue - (Maintenance + Fuel)) / Acquisition Cost
         if total_acquisition > 0:
-            net_income = total_revenue - (total_fuel_cost + total_maint)
-            roi = round((net_income / total_acquisition) * 100, 1)
+            net_income = total_revenue - float(total_fuel_cost + total_maint)
+            roi = round((net_income / float(total_acquisition)) * 100, 1)
         else:
             roi = 14.2 # Fallback/Mock matching screenshot
 
@@ -158,9 +155,7 @@ class AnalyticsSummaryView(APIView):
 
         # Inject real current month revenue if any
         current_month_key = today.strftime('%b')
-        real_sum = 0
-        for t in Trip.objects.filter(status='COMPLETED', created_at__month=today.month):
-            real_sum += t.planned_distance * 150
+        real_sum = float(Trip.objects.filter(status='COMPLETED', created_at__month=today.month).aggregate(Sum('revenue'))['revenue__sum'] or 0)
         if real_sum > 0:
             months_data[current_month_key] = real_sum
 
