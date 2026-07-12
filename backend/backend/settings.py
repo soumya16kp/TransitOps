@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'auth_app',
     'core',
     'vehicle_app',
+    'maintenance_app',
 ]
 
 MIDDLEWARE = [
