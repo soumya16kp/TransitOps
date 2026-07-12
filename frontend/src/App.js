@@ -14,7 +14,6 @@ import FuelExpenses from './pages/fuel/FuelExpenses';
 import TripDispatcher from './pages/trips/TripDispatcher';
 import Settings from './pages/settings/Settings';
 import Tasks from './pages/Tasks/Tasks';
-
 function App() {
     return (
         <AuthProvider>
@@ -22,27 +21,27 @@ function App() {
                 <div className="App">
                     <Routes>
                         {/* Public routes */}
-                        <Route path="/login"    element={<Login />} />
+                        <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/"         element={<Navigate to="/dashboard" />} />
+                        <Route path="/" element={<Navigate to="/dashboard" />} />
 
                         {/* Protected routes wrapped in Layout */}
                         <Route element={<ProtectedRoute />}>
                             <Route element={<RBACProvider><Layout /></RBACProvider>}>
-                                <Route path="/dashboard"     element={<Dashboard />} />
-                                <Route path="/registry"      element={<VehicleRegistry />} />
-                                <Route path="/drivers"       element={<Drivers />} />
-                                <Route path="/maintenance"   element={<Maintenance />} />
+                                <Route path="/dashboard" element={<Dashboard />} />
+                                <Route path="/registry" element={<VehicleRegistry />} />
+                                <Route path="/drivers" element={<Drivers />} />
+                                <Route path="/maintenance" element={<Maintenance />} />
                                 <Route path="/fuel-expenses" element={<FuelExpenses />} />
-                                <Route path="/dispatcher"    element={<TripDispatcher />} />
-                                <Route path="/settings"      element={<Settings />} />
-                                <Route path="/tasks"         element={<Tasks />} />
-                            </Route>
-                        </Route>
-                    </Routes>
-                </div>
-            </Router>
-        </AuthProvider>
+                                <Route path="/dispatcher" element={<TripDispatcher />} />
+                                <Route path="/settings" element={<Settings />} />
+                                <Route path="/tasks" element={<Tasks />} />
+                            </Route >
+                        </Route >
+                    </Routes >
+                </div >
+            </Router >
+        </AuthProvider >
     );
 }
 

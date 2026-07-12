@@ -34,21 +34,20 @@ const Layout = () => {
     } else if (location.pathname === '/dispatcher') {
         title = "Trip Dispatcher";
         subtitle = "Create, dispatch, and track live trips";
-    } else if (location.pathname === '/tasks') {
-        title = "Execution Board";
-        subtitle = "Real-time Kanban view of all trip lifecycle phases";
     } else if (location.pathname === '/settings') {
         title = "Settings & RBAC";
         subtitle = "Configure depot details and view role mappings";
+    } else if (location.pathname === '/tasks') {
+        title = "Execution Board";
+        subtitle = "Real-time Kanban view of all trip lifecycle phases";
     }
 
     // Guard: redirect to /dashboard if user tries to access a restricted page directly
     const routeModuleMap = {
-        '/registry':      'fleet',
-        '/maintenance':   'fleet',
-        '/drivers':       'driver',
-        '/dispatcher':    'trips',
-        '/tasks':         'trips',
+        '/registry': 'fleet',
+        '/maintenance': 'fleet',
+        '/drivers': 'driver',
+        '/dispatcher': 'trips',
         '/fuel-expenses': 'fuel',
     };
     const currentModule = routeModuleMap[location.pathname];
@@ -71,83 +70,98 @@ const Layout = () => {
                             <i className="fas fa-th-large"></i>
                             <span>Dashboard</span>
                         </NavLink>
+    {/* Fleet – canAccess('fleet') */ }
+    {
+        canAccess('fleet') && (
+            <NavLink to="/registry" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-truck"></i>
+                <span>Fleet</span>
+            </NavLink>
+        )
+    }
 
-                        {/* Fleet – canAccess('fleet') */}
-                        {canAccess('fleet') && (
-                            <NavLink to="/registry" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-truck"></i>
-                                <span>Fleet</span>
-                            </NavLink>
-                        )}
+    {/* Drivers – canAccess('driver') */ }
+    {
+        canAccess('driver') && (
+            <NavLink to="/drivers" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-id-card"></i>
+                <span>Drivers</span>
+            </NavLink>
+        )
+    }
 
-                        {/* Drivers – canAccess('driver') */}
-                        {canAccess('driver') && (
-                            <NavLink to="/drivers" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-id-card"></i>
-                                <span>Drivers</span>
-                            </NavLink>
-                        )}
+    {/* Tasks – canAccess('trips') */ }
+    {
+        canAccess('trips') && (
+            <NavLink to="/tasks" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-tasks"></i>
+                <span>Tasks</span>
+            </NavLink>
+        )
+    }
 
-                        {/* Tasks – canAccess('trips') */}
-                        {canAccess('trips') && (
-                            <NavLink to="/tasks" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-tasks"></i>
-                                <span>Tasks</span>
-                            </NavLink>
-                        )}
+    {/* Trips – canAccess('trips') */ }
+    {
+        canAccess('trips') && (
+            <NavLink to="/dispatcher" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-route"></i>
+                <span>Trips</span>
+            </NavLink>
+        )
+    }
 
-                        {/* Trips – canAccess('trips') */}
-                        {canAccess('trips') && (
-                            <NavLink to="/dispatcher" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-route"></i>
-                                <span>Trips</span>
-                            </NavLink>
-                        )}
+    {/* Maintenance – canAccess('fleet') (maintenance is fleet-adjacent) */ }
+    {
+        canAccess('fleet') && (
+            <NavLink to="/maintenance" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-tools"></i>
+                <span>Maintenance</span>
+            </NavLink>
+        )
+    }
 
-                        {/* Maintenance – canAccess('fleet') (maintenance is fleet-adjacent) */}
-                        {canAccess('fleet') && (
-                            <NavLink to="/maintenance" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-tools"></i>
-                                <span>Maintenance</span>
-                            </NavLink>
-                        )}
+    {/* Fuel & Expenses – canAccess('fuel') */ }
+    {
+        canAccess('fuel') && (
+            <NavLink to="/fuel-expenses" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-gas-pump"></i>
+                <span>Fuel &amp; Expenses</span>
+            </NavLink>
+        )
+    }
 
-                        {/* Fuel & Expenses – canAccess('fuel') */}
-                        {canAccess('fuel') && (
-                            <NavLink to="/fuel-expenses" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-gas-pump"></i>
-                                <span>Fuel &amp; Expenses</span>
-                            </NavLink>
-                        )}
+    {/* Analytics – canAccess('analytics') */ }
+    {
+        canAccess('analytics') && (
+            <a href="#analytics" onClick={(e) => e.preventDefault()}>
+                <i className="fas fa-chart-line"></i>
+                <span>Analytics</span>
+            </a>
+        )
+    }
 
-                        {/* Analytics – canAccess('analytics') */}
-                        {canAccess('analytics') && (
-                            <a href="#analytics" onClick={(e) => e.preventDefault()}>
-                                <i className="fas fa-chart-line"></i>
-                                <span>Analytics</span>
-                            </a>
-                        )}
+    {/* Settings – admin only */ }
+    {
+        role === 'admin' && (
+            <NavLink to="/settings" className={({ isActive }) => isActive ? "active" : ""}>
+                <i className="fas fa-cog"></i>
+                <span>Settings</span>
+            </NavLink>
+        )
+    }
+                    </nav >
+    <div className="sidebar-footer">
+        <button onClick={handleLogout} className="logout-btn">
+            <i className="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </button>
+    </div>
+                </aside >
 
-                        {/* Settings – admin only */}
-                        {role === 'admin' && (
-                            <NavLink to="/settings" className={({ isActive }) => isActive ? "active" : ""}>
-                                <i className="fas fa-cog"></i>
-                                <span>Settings</span>
-                            </NavLink>
-                        )}
-                    </nav>
-                    <div className="sidebar-footer">
-                        <button onClick={handleLogout} className="logout-btn">
-                            <i className="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </button>
-                    </div>
-                </aside>
-
-                {/* Main Shared Content Area */}
-                <main className="main-content">
-                    {/* Unified Premium Header */}
-                    <header className="main-header">
+    {/* Main Shared Content Area */ }
+    < main className = "main-content" >
+        {/* Unified Premium Header */ }
+        < header className = "main-header" >
                         <div className="header-left">
                             <h1>{title}</h1>
                             <p>{subtitle}</p>
@@ -174,13 +188,13 @@ const Layout = () => {
                                 {user?.username?.charAt(0).toUpperCase()}
                             </div>
                         </div>
-                    </header>
+                    </header >
 
-                    {/* Active Route Content */}
-                    <Outlet />
-                </main>
-            </div>
-        </div>
+    {/* Active Route Content */ }
+    < Outlet />
+                </main >
+            </div >
+        </div >
     );
 };
 
