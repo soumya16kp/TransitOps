@@ -27,7 +27,7 @@ class DriverListCreateView(APIView):
             queryset = queryset.filter(license_category=category)
 
         if driver_status:
-            queryset = queryset.filter(status=driver_status)
+            queryset = queryset.filter(status__iexact=driver_status)
 
         if search:
             queryset = queryset.filter(

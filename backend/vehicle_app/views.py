@@ -27,7 +27,7 @@ class VehicleListCreateView(APIView):
             queryset = queryset.filter(vehicle_type=vehicle_type)
 
         if vehicle_status:
-            queryset = queryset.filter(status=vehicle_status)
+            queryset = queryset.filter(status__iexact=vehicle_status)
 
         if search:
             queryset = queryset.filter(

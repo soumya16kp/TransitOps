@@ -29,13 +29,13 @@ const TripDispatcher = () => {
   const fetchAvailableResources = async () => {
     try {
       const [vehiclesRes, driversRes] = await Promise.all([
-        axios.get('http://localhost:8000/api/vehicles/?status=Available'),
-        axios.get('http://localhost:8000/api/drivers/?status=AVAILABLE')
+        axios.get('http://localhost:8000/api/vehicles/'),
+        axios.get('http://localhost:8000/api/drivers/')
       ]);
       setVehicles(vehiclesRes.data);
       setDrivers(driversRes.data);
     } catch (err) {
-      console.error("Failed to fetch available vehicles or drivers", err);
+      console.error("Failed to fetch vehicles or drivers", err);
     }
   };
 
@@ -93,24 +93,24 @@ const TripDispatcher = () => {
           </div>
           
           <div className="form-group">
-            <label>Vehicle (Available Only)</label>
+            <label>Vehicle</label>
             <select name="vehicle" value={formData.vehicle} onChange={handleChange} className="form-control" required>
               <option value="">Select Vehicle...</option>
               {vehicles.map(v => (
-                <option key={v.id} value={v.id}>
-                  {v.registration_no} - {v.name} ({v.capacity})
+                <option key={v.id} value={v.id} disabled={v.status !== 'Available'}>
+                  {v.registration_no} - {v.name} ({v.capacity}) [{v.status}]
                 </option>
               ))}
             </select>
           </div>
 
           <div className="form-group">
-            <label>Driver (Available Only)</label>
+            <label>Driver</label>
             <select name="driver" value={formData.driver} onChange={handleChange} className="form-control" required>
               <option value="">Select Driver...</option>
               {drivers.map(d => (
-                <option key={d.id} value={d.id}>
-                  {d.name} ({d.license_category})
+                <option key={d.id} value={d.id} disabled={d.status !== 'AVAILABLE'}>
+                  {d.name} ({d.license_category}) [{d.status}]
                 </option>
               ))}
             </select>
