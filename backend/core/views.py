@@ -211,13 +211,6 @@ class AnalyticsSummaryView(APIView):
             sorted_costs  = sorted(vehicle_costs.items(), key=lambda x: x[1], reverse=True)
             top_costliest = [{'vehicle': v, 'cost': c} for v, c in sorted_costs[:3]]
 
-            if not top_costliest:
-                top_costliest = [
-                    {'vehicle': 'TRUCK-11', 'cost': 18500.00},
-                    {'vehicle': 'MINI-03',  'cost': 9200.00},
-                    {'vehicle': 'VAN-05',   'cost': 3270.00},
-                ]
-
         # ── Vehicle list for the frontend filter dropdown ─────────────────────
         all_vehicles = list(
             Vehicle.objects.values('registration_no', 'name', 'vehicle_type')
