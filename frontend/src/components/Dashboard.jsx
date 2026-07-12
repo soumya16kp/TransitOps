@@ -5,7 +5,7 @@ import axios from 'axios';
 import '../styles/dashboard.css';
 
 const Dashboard = () => {
-    const { user, roleDisplay } = useAuth();
+    const { user } = useAuth();
     const [protectedData, setProtectedData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [stats] = useState({
@@ -104,12 +104,6 @@ const Dashboard = () => {
                         <div className="profile-item">
                             <span className="label">Phone</span>
                             <span className="value">{user?.phone_number || 'Not provided'}</span>
-                        </div>
-                        <div className="profile-item">
-                            <span className="label">Role</span>
-                            <span className="value" style={{ color: '#f5a623', fontWeight: '600' }}>
-                                {roleDisplay || user?.role || 'N/A'}
-                            </span>
                         </div>
                         <div className="profile-item">
                             <span className="label">Status</span>

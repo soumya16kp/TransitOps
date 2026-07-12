@@ -8,6 +8,7 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import VehicleRegistry from './pages/Registry/VehicleRegistry';
 import Maintenance from './pages/Maintenance/Maintenance';
+import FuelExpenses from './pages/fuel/FuelExpenses';
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                                 <Route path="/dashboard"   element={<Dashboard />} />
                                 <Route path="/registry"    element={<VehicleRegistry />} />
                                 <Route path="/maintenance" element={<Maintenance />} />
+                                <Route path="/fuel-expenses" element={<FuelExpenses />} />
                             </Route>
                         </Route>
                     </Routes>
